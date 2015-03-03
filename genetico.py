@@ -18,7 +18,7 @@ y nreinas.py vistas en clase.
 
 """
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Julio Waissman, Gerardo Tarragona'
 
 import nreinas
 import random
@@ -74,7 +74,7 @@ class Genetico:
 
         @return un número con la adaptación del individuo
         """
-        #return max(0, len(individuo) - costo(individuo))
+       #return max(0, len(individuo) - costo(individuo))
         return 1.0 / (1.0 + costo(individuo))
 
     def seleccion(self, poblacion, aptitud):
@@ -150,7 +150,7 @@ class GeneticoPermutaciones1(Genetico):
             ganador = ind1 if aptitud[ind1] > aptitud[ind2] else ind2
             madres.append(poblacion[ganador])
 
-        return padres, madres
+       return padres, madres
 
     def cruza(self, padre, madre):
         """
@@ -208,7 +208,7 @@ class GeneticoPermutaciones2(Genetico):
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
 
         """
-        self.nombre = 'propuesto por el alumno'
+        self.nombre = 'Algoritmo Gerardo'
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
@@ -224,7 +224,8 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+      	return max(0, len(individuo) - costo(individuo))
+ 
 
     def seleccion(self, poblacion, aptitud):
         """
@@ -237,7 +238,17 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        
+	acc = sum(aptitud)
+	dardo = random.random()
+        base = 0
+        for (i, a) in enumerate(aptitud):
+            base += a/acc
+            if dardo <= base:
+                return i
+
+        return None
+
 
     def cruza(self, padre, madre):
         """
@@ -272,7 +283,6 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
 
 
 def prueba_genetico_nreinas(algo_genetico, problema, n_poblacion, n_generaciones):
@@ -306,7 +316,7 @@ if __name__ == "__main__":
                                        n_poblacion=32,
                                        n_generaciones=100)
     print solucion
-
+   
     #################################################################################################
     #                          20 PUNTOS
     #################################################################################################

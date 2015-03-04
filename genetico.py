@@ -18,7 +18,7 @@ y nreinas.py vistas en clase.
 
 """
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Luis Roberto Alcazar Ortega'
 
 import nreinas
 import random
@@ -203,12 +203,13 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self):
+    def __init__(self, prob_muta):
         """
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
 
         """
         self.nombre = 'propuesto por el alumno'
+        self.prob_muta = prob_muta
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
@@ -224,7 +225,9 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+
+        return max(0, len(individuo) - costo(individuo))
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def seleccion(self, poblacion, aptitud):
         """
@@ -237,7 +240,25 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #Metodo de la ruleta
+        acc = sum(aptitud)
+        dardo = random.random()
+        padres = []
+        base = 0
+        for(i,ai) in enumerate(aptitud):
+            base += ai/acc
+            if dardo <= base:
+                padres.append(poblacion[i])
+
+        dardo = random.random()
+        madres = []
+        base = 0
+        for(i,ai) in enumerate(aptitud):
+            base += ai/acc
+            if dardo <= base:
+                madres.append(poblacion[i])
+        return padres, madres
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza(self, padre, madre):
         """
@@ -272,7 +293,17 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+
+        poblacion_mutada = []
+        for individuo in poblacion:
+            individuo = list(individuo)
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    k = random.randint(0, len(individuo) - 1)
+                    individuo[i], individuo[k] = individuo[k], individuo[i]
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
 
 def prueba_genetico_nreinas(algo_genetico, problema, n_poblacion, n_generaciones):
@@ -302,7 +333,7 @@ if __name__ == "__main__":
     #
 
     solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(16),
+                                       problema=nreinas.ProblemaNreinas(8),
                                        n_poblacion=32,
                                        n_generaciones=100)
     print solucion
@@ -314,15 +345,15 @@ if __name__ == "__main__":
     # buscando que el algoritmo encuentre SIEMPRE una solución óptima, utilizando el menor tiempo
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
-    #
+    #  
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia? Escribelo aqui
     #   abajo, utilizando tnto espacio como consideres necesario.
     #
     # Recuerda de quitar los comentarios de las lineas siguientes:
 
-    # solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(),
-    #                                        problema=nreinas.ProblemaNreinas(16),
-    #                                        n_poblacion=32,
-    #                                        n_generaciones=500)
-    # print solucion
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.10),
+                                            problema=nreinas.ProblemaNreinas(8),
+                                            n_poblacion=32,
+                                            n_generaciones=500)
+    print solucion

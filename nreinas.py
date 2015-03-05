@@ -7,10 +7,6 @@ nreinas.py
 Ejemplo de las n_reinas con búsquedas locales
 
 """
-
-__author__ = 'juliowaissman'
-
-
 import blocales
 from random import shuffle
 from random import sample
@@ -18,8 +14,11 @@ from itertools import permutations
 from itertools import combinations
 from math import exp
 
+__author__ = 'juliowaissman'
+
 
 class ProblemaNreinas(blocales.Problema):
+
     """
     Las N reinas en forma de búsqueda local se inicializa como
 
@@ -28,6 +27,7 @@ class ProblemaNreinas(blocales.Problema):
     Por default son las clásicas 8 reinas.
 
     """
+
     def __init__(self, n=8):
         self.n = n
 
@@ -38,7 +38,8 @@ class ProblemaNreinas(blocales.Problema):
 
     def vecinos(self, estado):
         """
-        Generador de los vecinos de un estado, permutando de dos en dos posiciones
+        Generador de los vecinos de un estado, permutando \
+        de dos en dos posiciones
 
         @param estado: Una tupla que describe un estado
 
@@ -75,7 +76,7 @@ class ProblemaNreinas(blocales.Problema):
         """
         c = 0
         for i, j in combinations(range(self.n), 2):
-            if estado[i] == estado[j] or abs(estado[i] - estado[j]) == abs(j-i):
+            if estado[i] == estado[j] or abs(estado[i] - estado[j]) == abs(j - i):
                 c += 1
         return c
 
@@ -90,17 +91,20 @@ def prueba_descenso_colinas(problema=ProblemaNreinas(8), repeticiones=10):
 
 
 def prueba_temple_simulado(problema=ProblemaNreinas(8), K=100, delta=0.01):
-    """ Prueba el algoritmo de temple simulado con calendarizador exponencial """
+    """ Prueba el algoritmo de temple simulado con calendarizador exponencial \
+    """
 
-    solucion = blocales.temple_simulado(problema, lambda i: K * exp(-delta * i))
-    print u"\n\nUtilizando temple simulado con calendarización exponencial"
+    solucion = blocales.temple_simulado(
+        problema, lambda i: K * exp(-delta * i))
+    print "\n\nUtilizando temple simulado con calendarización exponencial"
     print "K= ", K, " y delta= ", delta
-    print u"\nEl costo de la solución utilizando temple simulado es ", problema.costo(solucion)
-    print u"Y la solución es: "
+    print "\nEl costo de la solución utilizando temple simulado es ",\
+        problema.costo(solucion)
+    print "Y la solución es: "
     print solucion
 
 
 if __name__ == "__main__":
 
-    #prueba_descenso_colinas(ProblemaNreinas(32), 10)
+    # prueba_descenso_colinas(ProblemaNreinas(32), 10)
     prueba_temple_simulado(ProblemaNreinas(64), 500, 0.01)

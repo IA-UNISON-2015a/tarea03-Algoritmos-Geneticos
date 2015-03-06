@@ -149,7 +149,6 @@ class GeneticoPermutaciones1(Genetico):
         for (ind1, ind2) in [(baraja[i], baraja[i+1]) for i in range(0, len(poblacion)-1, 2)]:
             ganador = ind1 if aptitud[ind1] > aptitud[ind2] else ind2
             madres.append(poblacion[ganador])
-
         return padres, madres
 
     def cruza(self, padre, madre):
@@ -203,7 +202,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self):
+    def __init__(self, prob_muta = 0.1):
         """
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
 
@@ -212,6 +211,7 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
+        self.prob_muta = prob_muta
 
     def calcula_aptitud(self, individuo, costo=None):
         """
@@ -224,6 +224,8 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+
+        return costo(individuo)
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def seleccion(self, poblacion, aptitud):
@@ -236,7 +238,23 @@ class GeneticoPermutaciones2(Genetico):
         #####################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
-        #
+        #RULETA
+        padres = []
+        madres= []
+        baraja = range(len(poblacion))
+        T = 0
+        acc = 0
+        for ind in [(baraja[i]) for i in range(0, len(poblacion),1)]:
+            T += aptitud[ind]
+
+        while(len(padres)<len(poblacion)/2 or len(madres)<len(poblacion)/2):
+            k = random.randint(1,T)
+            for ind in [(baraja[i]) for i in range(0, len(poblacion),1)]:
+                acc+=aptitud[ind]
+                if (acc > k):
+                    padres.append(poblacion[ind]) if len(padres)<len(poblacion)/2 else madres.append(poblacion[ind])
+                    acc=0
+        return padres, madres
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza(self, padre, madre):
@@ -271,7 +289,19 @@ class GeneticoPermutaciones2(Genetico):
         ###################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
-        #
+        #SWITCH se cambia un alelo en el individuo por su inmediato a la derecha si el alelo a cambiar es el ultimo se intercambia con el primero
+        poblacion_mutada = []
+        for individuo in poblacion:
+            individuo = list(individuo)
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    k = random.randint(0, len(individuo) - 1)
+                    if (k < len(individuo) - 1):
+                        individuo[k+1], individuo[k] = individuo[k], individuo[k+1]
+                    else:
+                        individuo[0], individuo[k] = individuo[k], individuo[0]
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
 
@@ -297,15 +327,36 @@ if __name__ == "__main__":
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
     #
+    #   Para encontrar siempre la solución optima despues de muchos experimentos llegue a los siguientes valores
+    #   en cada parámetro y para cada uno de los casos
     #
+    #   8 REINAS
+    #           Probabilidad de mutación: 0.1
+    #           Tamaño de población: 20
+    #           Número de Generaciones: 50
+    #           Tiempo en segundos promedio: 0.08
+    #   16 REINAS
+    #           Probabilidad de mutación: 0.05
+    #           Tamaño de población: 40
+    #           Número de Generaciones: 250
+    #           Tiempo en segundos promedio: 2.5
+    #   32 REINAS
+    #           Probabilidad de mutación: 0.01
+    #           Tamaño de población: 50
+    #           Número de Generaciones: 300
+    #           Tiempo en segundos promedio: 13
     #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
-    #
+    #       Como conclusión, creo que entre mas grande sea el problema hay que realizar lo siguiente:
+    #           -Decrementar la probabilidad de mutación
+    #           -Aumentar lo menos posible pero suficiente el tamaño de la población
+    #           -Aumentar lo necesario el número de generaciones
+    #       Esto parece indicar que estas variaciones mencionadas seran proporcionales al incremento del problema
 
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(16),
-                                       n_poblacion=32,
-                                       n_generaciones=100)
-    print solucion
+    #solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.01),
+    #                                   problema=nreinas.ProblemaNreinas(32),
+    #                                   n_poblacion=50,
+    #                                   n_generaciones=300)
+    #print solucion
 
     #################################################################################################
     #                          20 PUNTOS
@@ -314,15 +365,25 @@ if __name__ == "__main__":
     # buscando que el algoritmo encuentre SIEMPRE una solución óptima, utilizando el menor tiempo
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
-    #
-    #
-    #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia? Escribelo aqui
-    #   abajo, utilizando tnto espacio como consideres necesario.
-    #
-    # Recuerda de quitar los comentarios de las lineas siguientes:
+    #   8 REINAS
+    #           Probabilidad de mutación: 0.5
+    #           Tamaño de población: 25
+    #           Número de Generaciones: 70
+    #           Tiempo en segundos promedio: 0.19
+    #   16 REINAS
+    #           Probabilidad de mutación: 0.3
+    #           Tamaño de población: 50
+    #           Número de Generaciones: 400
+    #           Tiempo en segundos promedio: 7
+    #   32 REINAS
+    #           Probabilidad de mutación: 0.05
+    #           Tamaño de población: 100
+    #           Número de Generaciones: 700
+    #           Tiempo en segundos promedio: 50
+    #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
 
-    # solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(),
-    #                                        problema=nreinas.ProblemaNreinas(16),
-    #                                        n_poblacion=32,
-    #                                        n_generaciones=500)
-    # print solucion
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.05),
+                                          problema=nreinas.ProblemaNreinas(32),
+                                         n_poblacion=100,
+                                        n_generaciones=700)
+    print solucion

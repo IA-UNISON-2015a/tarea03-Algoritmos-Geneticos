@@ -149,7 +149,6 @@ class GeneticoPermutaciones1(Genetico):
         for (ind1, ind2) in [(baraja[i], baraja[i+1]) for i in range(0, len(poblacion)-1, 2)]:
             ganador = ind1 if aptitud[ind1] > aptitud[ind2] else ind2
             madres.append(poblacion[ganador])
-
         return padres, madres
 
     def cruza(self, padre, madre):
@@ -203,7 +202,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self):
+    def __init__(self, prob_muta = 0.1):
         """
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
 
@@ -212,6 +211,7 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
+        self.prob_muta = prob_muta
 
     def calcula_aptitud(self, individuo, costo=None):
         """
@@ -224,6 +224,8 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+
+        return costo(individuo)
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def seleccion(self, poblacion, aptitud):
@@ -236,7 +238,23 @@ class GeneticoPermutaciones2(Genetico):
         #####################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
-        #
+        #RULETA
+        padres = []
+        madres= []
+        baraja = range(len(poblacion))
+        T = 0
+        acc = 0
+        for ind in [(baraja[i]) for i in range(0, len(poblacion),1)]:
+            T += aptitud[ind]
+
+        while(len(padres)<len(poblacion)/2 or len(madres)<len(poblacion)/2):
+            k = random.randint(1,T)
+            for ind in [(baraja[i]) for i in range(0, len(poblacion),1)]:
+                acc+=aptitud[ind]
+                if (acc > k):
+                    padres.append(poblacion[ind]) if len(padres)<len(poblacion)/2 else madres.append(poblacion[ind])
+                    acc=0
+        return padres, madres
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza(self, padre, madre):
@@ -271,7 +289,19 @@ class GeneticoPermutaciones2(Genetico):
         ###################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
-        #
+        #SWITCH se cambia un alelo en el individuo por su inmediato a la derecha si el alelo a cambiar es el ultimo se intercambia con el primero
+        poblacion_mutada = []
+        for individuo in poblacion:
+            individuo = list(individuo)
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    k = random.randint(0, len(individuo) - 1)
+                    if (k < len(individuo) - 1):
+                        individuo[k+1], individuo[k] = individuo[k], individuo[k+1]
+                    else:
+                        individuo[0], individuo[k] = individuo[k], individuo[0]
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
 
@@ -302,9 +332,9 @@ if __name__ == "__main__":
     #
 
     solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(16),
-                                       n_poblacion=32,
-                                       n_generaciones=100)
+                                       problema=nreinas.ProblemaNreinas(8),
+                                       n_poblacion=15,
+                                       n_generaciones=50)
     print solucion
 
     #################################################################################################
@@ -321,8 +351,8 @@ if __name__ == "__main__":
     #
     # Recuerda de quitar los comentarios de las lineas siguientes:
 
-    # solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(),
-    #                                        problema=nreinas.ProblemaNreinas(16),
-    #                                        n_poblacion=32,
-    #                                        n_generaciones=500)
-    # print solucion
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.1),
+                                           problema=nreinas.ProblemaNreinas(8),
+                                           n_poblacion=10,
+                                           n_generaciones=200)
+    print solucion

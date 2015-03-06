@@ -352,11 +352,11 @@ if __name__ == "__main__":
     #           -Aumentar lo necesario el número de generaciones
     #       Esto parece indicar que estas variaciones mencionadas seran proporcionales al incremento del problema
 
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.01),
-                                       problema=nreinas.ProblemaNreinas(32),
-                                       n_poblacion=50,
-                                       n_generaciones=300)
-    print solucion
+    #solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.01),
+    #                                   problema=nreinas.ProblemaNreinas(32),
+    #                                   n_poblacion=50,
+    #                                   n_generaciones=300)
+    #print solucion
 
     #################################################################################################
     #                          20 PUNTOS
@@ -365,15 +365,25 @@ if __name__ == "__main__":
     # buscando que el algoritmo encuentre SIEMPRE una solución óptima, utilizando el menor tiempo
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
-    #
-    #
-    #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia? Escribelo aqui
-    #   abajo, utilizando tnto espacio como consideres necesario.
-    #
-    # Recuerda de quitar los comentarios de las lineas siguientes:
+    #   8 REINAS
+    #           Probabilidad de mutación: 0.5
+    #           Tamaño de población: 25
+    #           Número de Generaciones: 70
+    #           Tiempo en segundos promedio: 0.19
+    #   16 REINAS
+    #           Probabilidad de mutación: 0.3
+    #           Tamaño de población: 50
+    #           Número de Generaciones: 400
+    #           Tiempo en segundos promedio: 7
+    #   32 REINAS
+    #           Probabilidad de mutación: 0.05
+    #           Tamaño de población: 100
+    #           Número de Generaciones: 700
+    #           Tiempo en segundos promedio: 50
+    #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
 
-    #solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.1),
-     #                                      problema=nreinas.ProblemaNreinas(8),
-      #                                     n_poblacion=10,
-       #                                    n_generaciones=200)
-    #print solucion
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.05),
+                                          problema=nreinas.ProblemaNreinas(32),
+                                         n_poblacion=100,
+                                        n_generaciones=700)
+    print solucion

@@ -327,14 +327,35 @@ if __name__ == "__main__":
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
     #
+    #   Para encontrar siempre la solución optima despues de muchos experimentos llegue a los siguientes valores
+    #   en cada parámetro y para cada uno de los casos
     #
+    #   8 REINAS
+    #           Probabilidad de mutación: 0.1
+    #           Tamaño de población: 20
+    #           Número de Generaciones: 50
+    #           Tiempo en segundos promedio: 0.08
+    #   16 REINAS
+    #           Probabilidad de mutación: 0.05
+    #           Tamaño de población: 40
+    #           Número de Generaciones: 250
+    #           Tiempo en segundos promedio: 2.5
+    #   32 REINAS
+    #           Probabilidad de mutación: 0.01
+    #           Tamaño de población: 50
+    #           Número de Generaciones: 300
+    #           Tiempo en segundos promedio: 13
     #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
-    #
+    #       Como conclusión, creo que entre mas grande sea el problema hay que realizar lo siguiente:
+    #           -Decrementar la probabilidad de mutación
+    #           -Aumentar lo menos posible pero suficiente el tamaño de la población
+    #           -Aumentar lo necesario el número de generaciones
+    #       Esto parece indicar que estas variaciones mencionadas seran proporcionales al incremento del problema
 
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(8),
-                                       n_poblacion=15,
-                                       n_generaciones=50)
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.01),
+                                       problema=nreinas.ProblemaNreinas(32),
+                                       n_poblacion=50,
+                                       n_generaciones=300)
     print solucion
 
     #################################################################################################
@@ -351,8 +372,8 @@ if __name__ == "__main__":
     #
     # Recuerda de quitar los comentarios de las lineas siguientes:
 
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.1),
-                                           problema=nreinas.ProblemaNreinas(8),
-                                           n_poblacion=10,
-                                           n_generaciones=200)
-    print solucion
+    #solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.1),
+     #                                      problema=nreinas.ProblemaNreinas(8),
+      #                                     n_poblacion=10,
+       #                                    n_generaciones=200)
+    #print solucion

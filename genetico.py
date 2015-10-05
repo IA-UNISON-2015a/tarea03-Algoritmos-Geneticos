@@ -18,12 +18,12 @@ y nreinas.py vistas en clase.
 
 """
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Ruben Dario Pineda Gonzalez'
 
 import nreinas
 import random
 import time
-
+import math
 
 class Genetico:
     """
@@ -191,6 +191,7 @@ class GeneticoPermutaciones1(Genetico):
                     k = random.randint(0, len(individuo) - 1)
                     individuo[i], individuo[k] = individuo[k], individuo[i]
             poblacion_mutada.append(tuple(individuo))
+
         return poblacion_mutada
 
 
@@ -203,15 +204,17 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self):
+    def __init__(self, prob_muta = 0.01):
         """
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
 
         """
-        self.nombre = 'propuesto por el alumno'
+        
+        self.nombre = 'propuesto por el alumno con prob. de mutación ' + str(prob_muta)
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
+        self.prob_muta = prob_muta
 
     def calcula_aptitud(self, individuo, costo=None):
         """
@@ -224,11 +227,13 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        
+        return 1.0 / ( 1 + math.sqrt(costo(individuo)))
 
     def seleccion(self, poblacion, aptitud):
         """
         Desarrolla un método específico de selección.
+        Seleccion Ruleta.
 
         """
         #####################################################################
@@ -237,7 +242,31 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        suma_aptitudes = sum(aptitud)
+        r = random.random() * suma_aptitudes
+        sum_parcial = 0
+
+        padres = []
+        baraja = range(len(poblacion))
+        random.shuffle(baraja)
+
+        for ind1 in [baraja[i] for i in range(len(poblacion)-1)]:
+            sum_parcial = sum_parcial + aptitud[ind1]
+            if sum_parcial >= suma_aptitudes:
+                padres.append(poblacion[ind1])
+                break
+
+        madres = []
+        random.shuffle(baraja)
+        for ind1 in [baraja[i] for i in range(len(poblacion)-1)]:
+            sum_parcial = sum_parcial + aptitud[ind1]
+            if sum_parcial >= suma_aptitudes:
+                madres.append(poblacion[ind1])
+                break
+
+        return padres, madres
+
+
 
     def cruza(self, padre, madre):
         """
@@ -272,8 +301,18 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
-
+        poblacion_mutada = []
+        for individuo in poblacion:
+            individuo = list(individuo)
+            if random.random() < self.prob_muta:
+                i = 0
+                k = i-1
+                while(i!=k):
+                    individuo[i],individuo[k] = individuo[k], individuo[i]
+                    i += 1
+                    k -= 1
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
 
 def prueba_genetico_nreinas(algo_genetico, problema, n_poblacion, n_generaciones):
     tiempo_inicial = time.time()
@@ -296,17 +335,29 @@ if __name__ == "__main__":
     # buscando que el algoritmo encuentre SIEMPRE una solución óptima, utilizando el menor tiempo
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
+    #   Para las 8 reinas:
+    #       prob_mutacion = 0.1
+    #       n_poblacion = 16
+    #       n_generaciones = 40
+    #   Para las 16 reinas:
+    #       prob_mutacion = 0.025
+    #       n_poblacion = 132
+    #       n_generaciones = 300
+    #   Para las 32 reinas:
+    #       prob_mutacion = 0.01
+    #       n_poblacion = 164
+    #       n_generaciones = 400
     #
+    #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia?
+    #       El numero de las generaciones crece exponencialmente conforme crecen las reinas,
+    #       la probabilidad de mutacion debe reducirse conforme aumentan las reinas.
     #
-    #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
-    #
-
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(16),
-                                       n_poblacion=32,
-                                       n_generaciones=100)
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.1),
+                                       problema=nreinas.ProblemaNreinas(8),
+                                       n_poblacion=16,
+                                       n_generaciones=40)
     print solucion
-
+    
     #################################################################################################
     #                          20 PUNTOS
     #################################################################################################
@@ -314,15 +365,15 @@ if __name__ == "__main__":
     # buscando que el algoritmo encuentre SIEMPRE una solución óptima, utilizando el menor tiempo
     # posible en promedio. Realiza esto para las 8, 16 y 32 reinas.
     #   -- ¿Cuales son en cada caso los mejores valores (escribelos abajo de esta lines)
-    #
+    #   No encontre casos en los que siempre se encontrara la solucion optima
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia? Escribelo aqui
     #   abajo, utilizando tnto espacio como consideres necesario.
+    #   Se necesitan mas valores para encontrar un resultado optimo.
     #
     # Recuerda de quitar los comentarios de las lineas siguientes:
-
-    # solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(),
-    #                                        problema=nreinas.ProblemaNreinas(16),
-    #                                        n_poblacion=32,
-    #                                        n_generaciones=500)
-    # print solucion
+    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.1),
+                                            problema=nreinas.ProblemaNreinas(8),
+                                            n_poblacion=64,
+                                            n_generaciones=300)
+    print solucion

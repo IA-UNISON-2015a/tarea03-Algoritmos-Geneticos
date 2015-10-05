@@ -3,46 +3,37 @@
 """
 genetico.py
 ------------
-
 Este modulo incluye el algoritmo genérico para algoritmos genéticos, así como un
 algoritmo genético adaptado a problemas de permutaciones, como el problema de las
 n-reinas o el agente viajero.
-
 Como tarea se pide desarrollar otro algoritmo genético con el fin de probar otro tipo
 de métodos internos, así como ajustar ambos algortmos para que funcionen de la mejor
 manera posible.
-
-
 Para que funcione, este modulo debe de encontrarse en la misma carpeta que blocales.py
 y nreinas.py vistas en clase.
-
 """
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Ana Sofia Ulloa'
 
 import nreinas
 import random
 import time
-
+import math
 
 class Genetico:
     """
     Clase genérica para un algoritmo genético.
     Contiene el algoritmo genético general y las clases abstractas.
-
     """
 
     def busqueda(self, problema, n_poblacion=10, n_generaciones=30, elitismo=True):
         """
         Algoritmo genético general
-
         @param problema: Un objeto de la clase blocal.problema
         @param n_poblacion: Entero con el tamaño de la población
         @param n_generaciones: Número de generaciones a simular
         @param elitismo: Booleano, para aplicar o no el elitismo
-
         @return: Un estado del problema
-
         """
         poblacion = [problema.estado_aleatorio() for _ in range(n_poblacion)]
 
@@ -68,10 +59,8 @@ class Genetico:
         """
         Calcula la adaptación de un individuo al medio, mientras más adaptado mejor, por default
         es inversamente proporcionl al costo (mayor costo, menor adaptción).
-
         @param individuo: Un estado el problema
         @param costo: Una función de costo (recibe un estado y devuelve un número)
-
         @return un número con la adaptación del individuo
         """
         #return max(0, len(individuo) - costo(individuo))
@@ -80,24 +69,18 @@ class Genetico:
     def seleccion(self, poblacion, aptitud):
         """
         Seleccion de estados
-
         @param poblacion: Una lista de individuos
-
         @return: Dos listas, una con los padres y otra con las madres.
         estas listas tienen una dimensión int(len(poblacion)/2)
-
         """
         raise NotImplementedError("¡Este metodo debe ser implementado por la subclase!")
 
     def cruza_listas(self, padres, madres):
         """
         Cruza una lista de padres con una lista de madres, cada pareja da dos hijos
-
         @param padres: Una lista de individuos
         @param madres: Una lista de individuos
-
         @return: Una lista de individuos
-
         """
         hijos = []
         for (padre, madre) in zip(padres, madres):
@@ -113,7 +96,6 @@ class Genetico:
     def mutacion(self, poblacion):
         """
         Mutación de una población. Devuelve una población mutada
-
         """
         raise NotImplementedError("¡Este metodo debe ser implementado por la subclase!")
 
@@ -121,12 +103,10 @@ class Genetico:
 class GeneticoPermutaciones1(Genetico):
     """
     Clase con un algoritmo genético adaptado a problemas de permutaciones
-
     """
     def __init__(self, prob_muta=0.01):
         """
         @param prob_muta : Probabilidad de mutación de un cromosoma (0.01 por defualt)
-
         """
         self.prob_muta = prob_muta
         self.nombre = 'propuesto por el profesor con prob. de mutación ' + str(prob_muta)
@@ -134,8 +114,6 @@ class GeneticoPermutaciones1(Genetico):
     def seleccion(self, poblacion, aptitud):
         """
         Selección por torneo.
-
-
         """
         padres = []
         baraja = range(len(poblacion))
@@ -155,12 +133,9 @@ class GeneticoPermutaciones1(Genetico):
     def cruza(self, padre, madre):
         """
         Cruza especial para problemas de permutaciones
-
         @param padre: Una tupla con un individuo
         @param madre: Una tupla con otro individuo
-
         @return: Dos individuos resultado de cruzar padre y madre con permutaciones
-
         """
         hijo1, hijo2 = list(padre), list(madre)
         corte1 = random.randint(0, len(padre)-1)
@@ -177,11 +152,8 @@ class GeneticoPermutaciones1(Genetico):
     def mutacion(self, poblacion):
         """
         Mutación para individus con permutaciones. Utiliza la variable local self.prob_muta
-
         @param poblacion: Una lista de individuos (tuplas).
-
         @return: Los individuos mutados
-
         """
         poblacion_mutada = []
         for individuo in poblacion:
@@ -201,14 +173,14 @@ class GeneticoPermutaciones1(Genetico):
 class GeneticoPermutaciones2(Genetico):
     """
     Clase con un algoritmo genético adaptado a problemas de permutaciones
-
     """
-    def __init__(self):
+    def __init__(self, prob_muta):
         """
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
-
         """
-        self.nombre = 'propuesto por el alumno'
+        self.prob_muta = prob_muta
+        
+        self.nombre = 'propuesto por el alumno' 
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
@@ -216,7 +188,6 @@ class GeneticoPermutaciones2(Genetico):
     def calcula_aptitud(self, individuo, costo=None):
         """
         Desarrolla un método específico de medición de aptitud.
-
         """
         ####################################################################
         #                          20 PUNTOS
@@ -224,30 +195,70 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        """
+        La aptitud será calculada en base a una función exponencial dependiente
+        del costo. Esta favorecerá fuertemente las combinaciones con bajo costo.
+
+        Se eligió 0.8 y dividir el exponente entre 2 para suavizar el decremento
+        de la función.
+        """
+        n = costo(individuo) 
+        return math.pow(0.8, n/2)
+
+        
 
     def seleccion(self, poblacion, aptitud):
-        """
-        Desarrolla un método específico de selección.
-
-        """
         #####################################################################
         #                          20 PUNTOS
         #####################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+
+        """
+        La selección de los padres será por el método de ruleta. Entre más apto
+        un individuo, mayor probabilidad de ser escogido. El más apto no será
+        siempre escogido, pero igual se le da mayor prioridad.
+        """
+        
+        sum = 0.0
+        for i in range(len(poblacion)):
+            sum += aptitud[i]
+        
+        padres = []
+
+        for ind in range(0, len(poblacion)):          
+            n = random.random() * sum
+            
+            for ind in range(len(poblacion)):
+                if aptitud[ind] > n:
+                    padres.append(poblacion[ind])
+                    break
+                n -= aptitud[ind]
+
+        
+        madres = []
+
+        for _ in range(0, len(poblacion)):          
+            n = random.random() * sum
+
+            for ind in range(0, len(poblacion)):
+                if aptitud[ind] > n:
+                    madres.append(poblacion[ind])
+                    break
+                n -= aptitud[ind]
+
+        return padres, madres
+        
+
+        
 
     def cruza(self, padre, madre):
         """
         Cruza especial para problemas de permutaciones
-
         @param padre: Una tupla con un individuo
         @param madre: Una tupla con otro individuo
-
         @return: Dos individuos resultado de cruzar padre y madre con permutaciones
-
         """
         hijo1, hijo2 = list(padre), list(madre)
         corte1 = random.randint(0, len(padre)-1)
@@ -264,7 +275,6 @@ class GeneticoPermutaciones2(Genetico):
     def mutacion(self, poblacion):
         """
         Desarrolla un método específico de mutación.
-
         """
         ###################################################################
         #                          20 PUNTOS
@@ -272,7 +282,29 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        """
+        Este método elige un valor aleatorio y lo mueve "al final". Por ejemplo,
+        si tenemos al individuo (1, 0, 3, 2, 5, 4, 7, 6) y el número aleatorio
+        es 0, recorremos el valor en el lugar 0 (en este caso, 1) hasta que sea
+        el último de la tupla. Nos quedaría: (0, 3, 2, 5, 4, 7, 6)
+        """
+
+        
+        poblacion_mutada = []
+        
+        for individuo in poblacion:
+            individuo = list(individuo)
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    k = random.randint(0, len(individuo) - 2)
+
+                    for j in range(k, len(individuo)-1):
+                        individuo[j], individuo[j+1] = individuo[j+1], individuo[j]
+
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
+   
+        
 
 
 def prueba_genetico_nreinas(algo_genetico, problema, n_poblacion, n_generaciones):
@@ -300,12 +332,56 @@ if __name__ == "__main__":
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
     #
+    """
+    * Un valor bajo de mutaciones ayuda a que haya cierta diversidad genética.
+    * Aumentar el número de la población parece ser menos costoso que aumentar
+    el número de generaciones
+    
+    ---------------------------------
+    CASO 8 REINAS
+    ---------------------------------
+    * Porcentaje de mutación : 1%
+    * Población: 64
+    * Generaciones: 16
+    
+    Con estos datos se encontraron soluciones que cumplían las condiciones.
+    Como esto tarda muy poco tiempo, se pueden aumentar los valores para tener
+    mayor certeza:
 
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(16),
-                                       n_poblacion=32,
-                                       n_generaciones=100)
-    print solucion
+    * Porcentaje de mutación : 1%
+    * Población: 64
+    * Generaciones: 64
+    
+    ---------------------------------
+    CASO 16 REINAS
+    ---------------------------------
+    * Porcentaje de mutación : 2%
+    * Población: 128
+    * Generaciones: 256
+
+    ---------------------------------
+    CASO 32 REINAS
+    ---------------------------------
+    * Porcentaje de mutación : 2%
+    * Población: 128
+    * Generaciones: 512
+    ---------------------------------
+    En general, pienso que aumentar el número de generaciones es más importante
+    para encontrar una solución, aunque esto resulte un poco más costoso que
+    aumentar la población. Aún así, también se debe aumentar la población.
+    El porcentaje de mutación fue ligeramente aumentado en los casos de 16 y 32
+    para que pudieran entrar nuevas combinaciones a la población con mayor
+    facilidad.
+    
+    """
+    #for i in range(0,10):
+    #    print "Prueba #",
+    #    print i+1
+    #    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.02),
+    #                                       problema=nreinas.ProblemaNreinas(16),
+    #                                       n_poblacion=32,
+    #                                       n_generaciones=500)
+    #    print solucion
 
     #################################################################################################
     #                          20 PUNTOS
@@ -321,8 +397,48 @@ if __name__ == "__main__":
     #
     # Recuerda de quitar los comentarios de las lineas siguientes:
 
-    # solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(),
-    #                                        problema=nreinas.ProblemaNreinas(16),
-    #                                        n_poblacion=32,
-    #                                        n_generaciones=500)
-    # print solucion
+    """
+    * Un valor bajo de mutaciones ayuda a que haya cierta diversidad genética.
+    * Aumentar el número de la población parece ser menos costoso que aumentar
+    el número de generaciones
+    
+    ---------------------------------
+    CASO 8 REINAS
+    ---------------------------------
+    * Porcentaje de mutación : 1%
+    * Población: 64
+    * Generaciones: 20
+    
+    Como la selección no es por torneo y tiene un factor más aleatorio, puede que
+    se requieran de valores de población y/o generaciones más alto para tener
+    resultados similares. Esto aplica para este caso y los otros de 16 y 32 reinas.
+
+    
+    ---------------------------------
+    CASO 16 REINAS
+    ---------------------------------
+    * Porcentaje de mutación : 2%
+    * Población: 160
+    * Generaciones: 800
+
+    ---------------------------------
+    CASO 32 REINAS
+    ---------------------------------
+    * Porcentaje de mutación : 2%
+    * Población: 400
+    * Generaciones: 1000
+    ---------------------------------
+
+    Al igual que el caso anterior, es importante aumentar el número de generaciones
+    más rápido que el de población. En general los valores son más altos que en el
+    primer algoritmo.
+    """
+    
+    for i in range(0,10):
+        print "Prueba #",
+        print i+1
+        solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.02),
+                                                problema=nreinas.ProblemaNreinas(16),
+                                                n_poblacion=200,
+                                                n_generaciones=500)
+        print solucion

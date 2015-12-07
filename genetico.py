@@ -18,7 +18,7 @@ y nreinas.py vistas en clase.
 
 """
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Christian Ruink'
 
 import nreinas
 import random
@@ -203,15 +203,17 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self):
+    def __init__(self, prob_muta):
         """
         Aqui puedes poner algunos de los parámetros que quieras utilizar en tu clase
 
         """
         self.nombre = 'propuesto por el alumno'
+        self.prob_muta = prob_muta
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ------------------------------------------------------------------------
         #
+
 
     def calcula_aptitud(self, individuo, costo=None):
         """
@@ -224,7 +226,13 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        """
+        Seguiremos tomando el costo como el determinante de la actitud pero el utilizando el
+        costo cuadrado. De esta manera discrimaneremos a los individuos con costo alto aun mas.
+
+        """
+        return 0.7**costo(individuo)
+
 
     def seleccion(self, poblacion, aptitud):
         """
@@ -237,7 +245,27 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        """
+        Los padres y los madres seran elegidos de manera aleatoria, pero, los individuos con
+        mayor aptitud tendra mas alta probabilidad de ser escogidos.
+        """
+
+        aptTotal = sum(aptitud)
+
+        padres = []
+        madres = []
+        for x in range(len(poblacion)):
+            if aptitud[x] > (random.uniform(0.6,1)*aptTotal/len(poblacion)):
+
+                padres.append(poblacion[x])
+                break
+
+        for x in range(len(poblacion)):
+            if aptitud[x] > (random.uniform(0.6,1)*aptTotal/len(poblacion)):
+                madres.append(poblacion[x])
+                break
+        return padres, madres
+
 
     def cruza(self, padre, madre):
         """
@@ -272,8 +300,21 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        """
+        Este método elige un valor aleatorio y lo mueve "al final". Por ejemplo,
+        si tenemos al individuo (1, 0, 3, 2, 5, 4, 7, 6) y el número aleatorio
+        es 0, recorremos el valor en el lugar 0 (en este caso, 1) hasta que sea
+        el último de la tupla. Nos quedaría: (0, 3, 2, 5, 4, 7, 6)
+        """
 
+        poblacion_mutada = []
+        for individuo in poblacion:
+            individuo = list(individuo)
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    individuo[i], individuo[0] = individuo[0], individuo[i]
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
 
 def prueba_genetico_nreinas(algo_genetico, problema, n_poblacion, n_generaciones):
     tiempo_inicial = time.time()
@@ -300,12 +341,41 @@ if __name__ == "__main__":
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun tu experiencia
     #
+    """
+    8 REINAS
+    Mutación : 0.01
+    Población: 32
+    Generaciones: 64
 
-    solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.05),
-                                       problema=nreinas.ProblemaNreinas(16),
-                                       n_poblacion=32,
-                                       n_generaciones=100)
-    print solucion
+    La solucion es rapidisima y correcta con estos datos. Podemos aumentar la poblacion /
+    generacions sin impactar demasiado el tiempo de ejecucion.
+
+    16 REINAS
+    Mutación : 0.02
+    Población: 120
+    Generaciones: 500
+
+    El aumento en las generaciones aumenta el tiempo de ejecucion mas que el aumento en
+    poblacion pero al mismo tiempo a mi parecer dan resultados mas certeros.
+
+
+    32 REINAS
+    Mutación : 2%
+    Población: 120
+    Generaciones: 500
+
+    El tiempo de ejecucion se esta volviendo demasiado alto. Pero menos generaciones/poblaciones
+    producen costos mas altos.
+
+    """
+#     for i in range(0,10):
+#         print "Prueba #",
+#         print i+1
+#         solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones1(0.02),
+#                                           problema=nreinas.ProblemaNreinas(32),
+#                                           n_poblacion=128,
+#                                           n_generaciones=512)
+#     print solucion
 
     #################################################################################################
     #                          20 PUNTOS
@@ -321,8 +391,36 @@ if __name__ == "__main__":
     #
     # Recuerda de quitar los comentarios de las lineas siguientes:
 
-    # solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(),
-    #                                        problema=nreinas.ProblemaNreinas(16),
-    #                                        n_poblacion=32,
-    #                                        n_generaciones=500)
-    # print solucion
+    """
+    8 REINAS
+    Mutación : 0.03
+    Población: 100
+    Generaciones: 500
+
+    La perdida en certeza es muy notable. Nuestro metodo de seleccion de padres debe de ser muy malo
+    en comparacion a torneo para explicar estos resultados.
+
+    16 REINAS
+    Mutación : 0.03
+    Población: 250
+    Generaciones: 1000
+
+    El aumento en generaciones disminuye los errores, pero aun aparecen sin importar que tanto aumente.
+    Nuestra mutacion probablemente tarde mucho en corregir debilidades...
+
+    32 REINAS
+    Mutación : 0.03%
+    Población: 350
+    Generaciones: 1500
+
+    Los errores son imposibles de erradicar. Conclusion: Heuristicas debiles, seleccion ineficaz.
+
+    """
+    for i in range(0,10):
+        print "Prueba #",
+        print i+1
+        solucion = prueba_genetico_nreinas(algo_genetico=GeneticoPermutaciones2(0.03),
+                                                problema=nreinas.ProblemaNreinas(32),
+                                                n_poblacion=350,
+                                                n_generaciones=1500)
+        print solucion

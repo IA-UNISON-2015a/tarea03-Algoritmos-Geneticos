@@ -273,7 +273,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_poblacion):
+    def __init__(self, problema, n_poblacion,mutacion=0.1):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -284,6 +284,8 @@ class GeneticoPermutaciones2(Genetico):
 
         """
         self.nombre = 'propuesto por el alumno'
+        self.mutacion = mutacion
+        self.poblacion = n_poblacion
         Genetico.__init__(self, problema, n_poblacion)
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
@@ -304,7 +306,8 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        costo = self.problema.costo(self.cadena_a_estado(individuo))
+        return (costo**2)/costo*0.5
 
     def seleccion(self):
         """
@@ -320,7 +323,13 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        parejas = []
+        for x in xrange(10):
+            a = random.randint(0,10)
+            b = random.randint(0,10)
+            parejas.append((a, b))
+        return parejas
+
 
     def cruza_individual(self, cadena1, cadena2):
         """
@@ -338,7 +347,18 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        hijo = []
+        while len(hijo) != 10:
+            for i in xrange(10):
+                if i % 2 == 0 and not cadena1[i] in hijo:
+                    hijo.append(cadena1[i])
+                elif not cadena2[i] in hijo:
+                    hijo.append(cadena2[i])
+                elif i <=9:
+                    hijo.append(cadena1[i+1])
+
+
+        return hijo
 
     def mutacion(self, poblacion):
         """
@@ -356,7 +376,7 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+
 
     def reemplazo(self, hijos):
         """
@@ -408,7 +428,7 @@ if __name__ == "__main__":
 
     # Un objeto genético con permutaciones con una población de
     # 10 individuos y una probabilidad de mutacion de 0.1
-    genetico = GeneticoPermutaciones1(ProblemaTonto(10), 10, 0.1)
+    genetico = GeneticoPermutaciones2(ProblemaTonto(10), 10, 0.1)
 
     print "El nombre del algortimo es: ", genetico.nombre
     print "Y el conjunto de estados iniciales es: "
@@ -432,6 +452,7 @@ if __name__ == "__main__":
     print "progenitor 2: ", cadena2
     print "descendiente: ", hijo
 
+
     hijos = genetico.cruza(parejas)
     print "Haciendo una cruza de todas las parejas tenemos que: "
     for (i, cadena) in enumerate(hijos):
@@ -448,5 +469,6 @@ if __name__ == "__main__":
           "el estado que encontramos con menor costo es:\n"
     print mejor
     print "\nQue debería tener el 0 y el 1 a los extremos"
+
 
 

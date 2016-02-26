@@ -20,7 +20,7 @@ blocales.py y nreinas.py vistas en clase.
 
 import random
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Jorge Carvajal'
 
 
 class Genetico:
@@ -305,8 +305,18 @@ class GeneticoPermutaciones2(Genetico):
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
         raise NotImplementedError("¡Este metodo debe ser implementado!")
-
+    def round_robin(aptitudes):
+        #regresa una tupla, torneo round robin
+        puntaje = []
+        for i in xrange (len(aptitudes)):
+            puntaje[i] = 0
+            for j in range(i+1,len(aptitudes)):
+                random = Random.random()
+                ganador = max(i,j) if random > 0.9 else min(i,j)
+                puntaje[ganador]+=1
+        return max(puntaje),max(puntaje-1)
     def seleccion(self):
+        return round_robin(self.aptitudes[:])
         """
         Seleccion de estados
 
@@ -320,6 +330,7 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
+
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza_individual(self, cadena1, cadena2):

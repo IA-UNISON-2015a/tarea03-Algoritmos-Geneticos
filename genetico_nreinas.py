@@ -67,7 +67,7 @@ if __name__ == "__main__":
     generaciones = 100
     prob_mutacion = 0.05
 
-    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(16),
+    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(8),
                                               n_poblacion, prob_mutacion)
 
     solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
@@ -92,9 +92,9 @@ if __name__ == "__main__":
     #       segun tu experiencia?
     #
 
-    # n_poblacion, generaciones = 32, 100
-    # # Agrega aqui las variables propias de tu algoritmo
-    # alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
-    #                                            n_poblacion)
-    # solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    # print solucion
+    #n_poblacion, generaciones = 32, 200
+    #Agrega aqui las variables propias de tu algoritmo
+    alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(8),
+                                                n_poblacion)
+    solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
+    print solucion

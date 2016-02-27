@@ -19,7 +19,8 @@ blocales.py y nreinas.py vistas en clase.
 """
 
 import random
-
+import copy
+import math
 __author__ = 'Jorge Carvajal'
 
 
@@ -273,7 +274,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_poblacion):
+    def __init__(self, problema, n_poblacion,prob_muta=0.01):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -283,6 +284,7 @@ class GeneticoPermutaciones2(Genetico):
         los métodos estáticos cadea_a_estado y estado_a_cadena).
 
         """
+        self.prob_muta = prob_muta
         self.nombre = 'propuesto por el alumno'
         Genetico.__init__(self, problema, n_poblacion)
         #
@@ -298,6 +300,7 @@ class GeneticoPermutaciones2(Genetico):
         @return un número con la adaptación del individuo
 
         """
+        return math.exp(-self.problema.costo(self.cadena_a_estado(individuo)))
         ####################################################################
         #                          10 PUNTOS
         ####################################################################
@@ -305,18 +308,28 @@ class GeneticoPermutaciones2(Genetico):
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
         raise NotImplementedError("¡Este metodo debe ser implementado!")
+    @staticmethod
     def round_robin(aptitudes):
         #regresa una tupla, torneo round robin
-        puntaje = []
+        puntaje = [0 for x in xrange(len(aptitudes))]
         for i in xrange (len(aptitudes)):
-            puntaje[i] = 0
             for j in range(i+1,len(aptitudes)):
-                random = Random.random()
-                ganador = max(i,j) if random > 0.9 else min(i,j)
+                ganador = max(i,j) if random.random() > 0.9 else min(i,j)
                 puntaje[ganador]+=1
-        return max(puntaje),max(puntaje-1)
+        puntaje.sort(reverse=True)
+        return puntaje[0],puntaje[1]
+
+    def seleccion_individual(self):
+        """
+        Realiza una única pareja por medio de la ruleta
+
+        @return: Una tupla con los pares a unirse
+
+        """
+        i,j = self.round_robin(self.aptitud[:])
+        return i, j
     def seleccion(self):
-        return round_robin(self.aptitudes[:])
+        return [self.seleccion_individual() for _ in range(self.n_poblacion)]
         """
         Seleccion de estados
 
@@ -331,9 +344,21 @@ class GeneticoPermutaciones2(Genetico):
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
 
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
-
     def cruza_individual(self, cadena1, cadena2):
+        hijo = cadena1[:]
+        len_cadena = len(hijo)
+        corte1 = random.randint(0, len_cadena - 1)
+        corte2 = random.randint(corte1 + 1, len_cadena)
+        evita = hijo[:corte1] + hijo[corte2:]
+        for i in range(corte1, corte2):
+            hijo[i] = cadena2[i]
+            while hijo[i] in evita:
+                hijo[i] = cadena2[cadena1.index(hijo[i])]
+        return hijo
+        cadena3 = copy.copy(cadena1)
+        for i in xrange(len(cadena1)):
+            cadena3[i],cadena3[(i+int(cadena2[i]))%len(cadena3)] = cadena3[(i+int(cadena2[i]))%len(cadena3)],cadena3[i]
+        return cadena3
         """
         Cruza dos individuos representados por sus cadenas
 
@@ -343,6 +368,7 @@ class GeneticoPermutaciones2(Genetico):
         @return: Un individuo nuevo
 
         """
+        
         #####################################################################
         #                          10 PUNTOS
         #####################################################################
@@ -352,6 +378,13 @@ class GeneticoPermutaciones2(Genetico):
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def mutacion(self, poblacion):
+        for individuo in poblacion:
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    k = individuo[i]
+                    individuo[i], individuo[k] = individuo[k], individuo[i]
+        return poblacion
+
         """
         Mutación para individuos con permutaciones.
         Utiliza la variable local self.prob_muta
@@ -370,6 +403,22 @@ class GeneticoPermutaciones2(Genetico):
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def reemplazo(self, hijos):
+        poblacionNueva= []
+        aptitudNueva= []
+        hijos.sort(key=self.calcula_aptitud, reverse=True)
+        apt_hijos = [self.calcula_aptitud(individuo) for individuo in hijos]
+        self.aptitud.sort(reverse=True)
+        for i in xrange(self.n_poblacion):
+            if(self.aptitud[0] > apt_hijos[0]):
+                poblacionNueva.append(self.poblacion.pop(0))
+                aptitudNueva.append(self.aptitud.pop(0))
+            else:
+                poblacionNueva.append(hijos.pop(0))
+                aptitudNueva.append(apt_hijos.pop(0))
+        self.poblacion,self.aptitud = poblacionNueva,aptitudNueva
+        del hijos
+        return None
+
         """
         Realiza el reemplazo generacional
 
@@ -419,7 +468,7 @@ if __name__ == "__main__":
 
     # Un objeto genético con permutaciones con una población de
     # 10 individuos y una probabilidad de mutacion de 0.1
-    genetico = GeneticoPermutaciones1(ProblemaTonto(10), 10, 0.1)
+    genetico = GeneticoPermutaciones2(ProblemaTonto(8), 8, 0.1)
 
     print "El nombre del algortimo es: ", genetico.nombre
     print "Y el conjunto de estados iniciales es: "

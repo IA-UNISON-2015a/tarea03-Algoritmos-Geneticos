@@ -19,8 +19,9 @@ blocales.py y nreinas.py vistas en clase.
 """
 
 import random
+import math
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Nan'
 
 
 class Genetico:
@@ -285,9 +286,30 @@ class GeneticoPermutaciones2(Genetico):
         """
         self.nombre = 'propuesto por el alumno'
         Genetico.__init__(self, problema, n_poblacion)
-        #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
-        #
+        self.poblacion = [problema.estado_aleatorio() for _ in range(n_poblacion)]
+
+    def estado_a_cadena(estado):
+        num = 0
+        dom = range(1, len(estado)+1)
+        for i in range(len(estado)-1):
+            num = (len(dom)-1)*(dom.index(estado[i]) + num)
+            dom.remove(estado[i])
+        return {"chrom": num, "len": len(estado)}
+
+    def cadena_a_estado(cadena):
+        estado = list(range(cadena["len"]))
+        num = cadena["chrom"]
+        estado[-1] = 0
+        for i in range(2, cadena["len"]+1):
+            estado[-i] = num%(i)
+            num = num/i
+        dom = range(cadena["len"])
+        for i in range(len(estado)):
+            aux = estado[i]
+            estado[i] = dom[estado[i]]+1
+            dom.remove(dom[aux])
+        return tuple(estado)
+       
 
     def calcula_aptitud(self, individuo):
         """
@@ -304,7 +326,7 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        return math.exp(-self.problema.costo(self.cadena_a_estado(individuo)))
 
     def seleccion(self):
         """
@@ -320,7 +342,10 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        sel = list()
+        ordenados = self.poblacion.sort(key=self.calcula_aptitud)
+        for i in range(1, len(ordenados)/2+1):
+            sel.append((0, i))
 
     def cruza_individual(self, cadena1, cadena2):
         """
@@ -338,7 +363,7 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        hijo = {"chrom":cadena1["chrom"]^cadena2["chrom"],"len": cadena1["len"]}
 
     def mutacion(self, poblacion):
         """
@@ -356,7 +381,14 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        fact = math.factorial(poblacion[0]["len"])
+        for ind in poblacion:
+            bit = 1
+            while bit < fact:
+                if random.random() < 0.001:
+                    ind["chrom"] = ind["chrom"] ^ bit
+                bit = bit*2
+
 
     def reemplazo(self, hijos):
         """
@@ -376,6 +408,9 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        todos_ordenados = (self.poblacion + hijos).sort(key=self.calcula_aptitud)
+        for i in range(self.n_poblacion):
+            self.poblacion[i] = todos_ordenados[i]
 
 
 class ProblemaTonto(object):

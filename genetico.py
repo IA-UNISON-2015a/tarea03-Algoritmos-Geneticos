@@ -20,7 +20,7 @@ blocales.py y nreinas.py vistas en clase.
 
 import random
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Jaime Lopez'
 
 
 class Genetico:
@@ -304,7 +304,9 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #return 1.0 / (1.0 + costo(individuo))#en el mejor de los casos el individuo tendra aptitud 1 que solo resultaria de tener costo 0
+        return 1 / (1.0 + self.problema.costo(self.cadena_a_estado(individuo)))
 
     def seleccion(self):
         """
@@ -320,7 +322,25 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        suma = sum(aptitud)
+        padre = []
+        madre = []
+
+        select = random.random()
+        base = 0
+        for(i,i2) in enumerate(aptitud):
+            base += i2/suma
+            if select <= base:
+                padre.append(poblacion[i])
+        select = random.random()
+        base = 0
+        for(i,i2) in enumerate(aptitud):
+            base += i2/suma
+            if select <= base:
+                madre.append(poblacion[i])
+        return padre, madre
+
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza_individual(self, cadena1, cadena2):
         """
@@ -338,7 +358,18 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        hijo1, hijo2 = list(padre), list(madre)
+        corte1 = random.randint(0, len(padre)-1)
+        corte2 = random.randint(corte1+1, len(padre))
+        for i in range(len(padre)):
+            if i < corte1 or i >= corte2:
+                hijo1[i], hijo2[i] = hijo2[i], hijo1[i]
+                while hijo1[i] in padre[corte1:corte2]:
+                    hijo1[i] = madre[padre.index(hijo1[i])]
+                while hijo2[i] in madre[corte1:corte2]:
+                    hijo2[i] = padre[madre.index(hijo2[i])]
+        return [tuple(hijo1), tuple(hijo2)]
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def mutacion(self, poblacion):
         """
@@ -356,7 +387,17 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
+        mutados = [] 
+        for individuo in poblacion:
+            individuo = list(individuo) 
+            i1 = random.random(0,len(individuo))
+            i2 = random.random(0,len(individuo))
+            aux = individuo[i1]
+            individuo[i1]=individuo[i2] 
+            individuo[i1]=aux
+            mutadas.append(tuple(individuo))
+        return mutados  
 
     def reemplazo(self, hijos):
         """

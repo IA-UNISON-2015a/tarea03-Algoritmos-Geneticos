@@ -62,19 +62,28 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
+    #   Reinas       Población           generaciones            Prrob. mutación
     #
+    #     8             20                  50                        0.1
+    #     16            40                  250                       0.05
+    #     32            50                  300                       0.01
+    #     64            70                  500                       0.005
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
+    #       Como conclusión, creo que entre mas grande sea el problema hay que realizar lo siguiente:
+    #           -Decrementar la probabilidad de mutación
+    #           -Aumentar lo menos posible pero suficiente el tamaño de la población
+    #           -Aumentar lo necesario el número de generaciones
 
-    n_poblacion = 20
-    generaciones = 100
-    prob_mutacion = 0.1
+    #n_poblacion = 50
+    #generaciones = 300
+    #prob_mutacion = 0.01
 
-    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(8),
-                                              n_poblacion, prob_mutacion)
-    imprime(alg_gen,100)
+    #alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(32),
+    #                                          n_poblacion, prob_mutacion)
+    #imprime(alg_gen,10)
 
     ###########################################################################
     #                          30 PUNTOS
@@ -87,17 +96,27 @@ if __name__ == "__main__":
     # utilizando el menor tiempo posible en promedio. Realiza esto para las 8,
     # 16, 32 y 64 reinas.
     #
-    #   -- ¿Cuales son en cada caso los mejores valores?
+     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
+    #   Reinas       Población           generaciones            Prrob. mutación
     #
+    #     8             30                  100                        0.1
+    #     16            40                  500                        0.01
+    #     32            50                  800                        0.005
+    #     64            100                 1000                       0.001
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
+    #       Como conclusión, creo que entre mas grande sea el problema hay que realizar lo siguiente:
+    #           -Decrementar la probabilidad de mutación
+    #           -Aumentar lo menos posible pero suficiente el tamaño de la población
+    #           -Aumentar lo necesario el número de generaciones
 
-    # n_poblacion, generaciones = 32, 100
-    # # Agrega aqui las variables propias de tu algoritmo
-    # alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
-    #                                            n_poblacion)
-    # solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    # print solucion
+    n_poblacion = 10
+    generaciones = 50
+    prob_mutacion = 0.1
+
+    alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(8),
+                                              n_poblacion, prob_mutacion)
+    imprime(alg_gen,10)

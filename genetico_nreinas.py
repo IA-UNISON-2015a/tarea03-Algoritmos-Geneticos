@@ -89,6 +89,7 @@ if __name__ == "__main__":
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
     #       8: n=10, g=50
+    #       16: n=200, g=1500 (talvez)
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?

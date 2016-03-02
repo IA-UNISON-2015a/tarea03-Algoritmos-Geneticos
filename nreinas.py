@@ -32,7 +32,7 @@ class ProblemaNreinas(blocales.Problema):
         self.n = n
 
     def estado_aleatorio(self):
-        estado = range(self.n)
+        estado = list(range(self.n))
         shuffle(estado)
         return tuple(estado)
 
@@ -46,7 +46,7 @@ class ProblemaNreinas(blocales.Problema):
 
         """
         edo_lista = list(estado)
-        for i, j in permutations(xrange(self.n), 2):
+        for i, j in permutations(range(self.n), 2):
             edo_lista[i], edo_lista[j] = edo_lista[j], edo_lista[i]
             yield tuple(edo_lista)
             edo_lista[i], edo_lista[j] = edo_lista[j], edo_lista[i]
@@ -83,21 +83,21 @@ class ProblemaNreinas(blocales.Problema):
 def prueba_descenso_colinas(problema=ProblemaNreinas(8), repeticiones=10):
     """ Prueba el algoritmo de descenso de colinas con n repeticiones """
 
-    print "\n\n" + "intento".center(10) + "estado".center(60) + "costo".center(10)
+    print ("\n\n" + "intento".center(10) + "estado".center(60) + "costo".center(10))
     for intento in range(repeticiones):
         solucion = blocales.descenso_colinas(problema)
-        print str(intento).center(10) + str(solucion).center(60) + str(problema.costo(solucion)).center(10)
+        print (str(intento).center(10) + str(solucion).center(60) + str(problema.costo(solucion)).center(10))
 
 
 def prueba_temple_simulado(problema=ProblemaNreinas(8), K=100, delta=0.01):
     """ Prueba el algoritmo de temple simulado con calendarizador exponencial """
 
     solucion = blocales.temple_simulado(problema, lambda i: K * exp(-delta * i))
-    print u"\n\nUtilizando temple simulado con calendarización exponencial"
-    print "K= ", K, " y delta= ", delta
-    print u"\nEl costo de la solución utilizando temple simulado es ", problema.costo(solucion)
-    print u"Y la solución es: "
-    print solucion
+    print (u"\n\nUtilizando temple simulado con calendarización exponencial")
+    print ("K= ", K, " y delta= ", delta)
+    print (u"\nEl costo de la solución utilizando temple simulado es ", problema.costo(solucion))
+    print (u"Y la solución es: ")
+    print (solucion)
 
 
 if __name__ == "__main__":

@@ -30,15 +30,20 @@ def prueba_genetico(algo_genetico, n_poblacion, n_generaciones, verbose=False):
     solucion = algo_genetico.busqueda(n_generaciones)
     t_final = time.time()
     if verbose:
-        print "\nUtilizando el algoritmo genético " + algo_genetico.nombre
-        print "Con poblacion de dimensión ", n_poblacion
-        print "Con ", str(n_generaciones), " generaciones"
-        print "Costo de la solución encontrada: ",
-        print algo_genetico.problema.costo(solucion)
-        print "Tiempo de ejecución en segundos: ", t_final - t_inicial
+        print ("\nUtilizando el algoritmo genético " + algo_genetico.nombre)
+        print ("Con poblacion de dimensión ", n_poblacion)
+        print ("Con ", str(n_generaciones), " generaciones")
+        print ("Costo \t | Tiempo ")
+    print (algo_genetico.problema.costo(solucion), "\t\t |",t_final - t_inicial)
     return solucion
 
-
+def imprime(alg_gen,n):
+    for i in range(0,n):
+        if i == 0:
+            prueba_genetico(alg_gen, n_poblacion, generaciones, True)
+        else:
+            prueba_genetico(alg_gen, n_poblacion, generaciones, False)
+    return 0
 if __name__ == "__main__":
 
     ###########################################################################
@@ -63,15 +68,13 @@ if __name__ == "__main__":
     #       segun tu experiencia?
     #
 
-    n_poblacion = 32
+    n_poblacion = 20
     generaciones = 100
-    prob_mutacion = 0.05
+    prob_mutacion = 0.1
 
-    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(16),
+    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(8),
                                               n_poblacion, prob_mutacion)
-
-    solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    print solucion
+    imprime(alg_gen,100)
 
     ###########################################################################
     #                          30 PUNTOS

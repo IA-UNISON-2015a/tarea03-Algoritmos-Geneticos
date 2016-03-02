@@ -179,9 +179,9 @@ class GeneticoPermutaciones1(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_poblacion, prob_muta=0.01):
+    def __init__(self, problema, n_poblacion, prob_muta=0.05):
         """
-        @param prob_muta : Probabilidad de mutación de un cromosoma (0.01 por defualt)
+        @param prob_muta : Probabilidad de mutación de un cromosoma (0.05 por defualt)
 
         """
         self.prob_muta = prob_muta
@@ -314,14 +314,14 @@ class GeneticoPermutaciones2(Genetico):
         puntaje = [0 for x in xrange(len(aptitudes))]
         for i in xrange (len(aptitudes)):
             for j in range(i+1,len(aptitudes)):
-                ganador = max(i,j) if random.random() > 0.9 else min(i,j)
+                ganador = max(i,j) if random.random() < 0.9 else min(i,j)
                 puntaje[ganador]+=1
         puntaje.sort(reverse=True)
         return puntaje[0],puntaje[1]
 
     def seleccion_individual(self):
         """
-        Realiza una única pareja por medio de la ruleta
+        Realiza una única pareja por medio de un torneo
 
         @return: Una tupla con los pares a unirse
 
@@ -345,20 +345,15 @@ class GeneticoPermutaciones2(Genetico):
         #
 
     def cruza_individual(self, cadena1, cadena2):
-        hijo = cadena1[:]
-        len_cadena = len(hijo)
-        corte1 = random.randint(0, len_cadena - 1)
-        corte2 = random.randint(corte1 + 1, len_cadena)
-        evita = hijo[:corte1] + hijo[corte2:]
-        for i in range(corte1, corte2):
-            hijo[i] = cadena2[i]
-            while hijo[i] in evita:
-                hijo[i] = cadena2[cadena1.index(hijo[i])]
+        hijo =  copy.copy(cadena1)
+        num_cambios = int( len(cadena1)/2)
+        for _ in xrange(num_cambios):
+            if(random.random() < 0.8):
+                i = random.choice(range(0,len(cadena1)-1))
+                reemplazo = cadena2[i]
+                index = hijo.index(reemplazo)
+                hijo[i], hijo[index] = hijo[index], hijo[i]
         return hijo
-        cadena3 = copy.copy(cadena1)
-        for i in xrange(len(cadena1)):
-            cadena3[i],cadena3[(i+int(cadena2[i]))%len(cadena3)] = cadena3[(i+int(cadena2[i]))%len(cadena3)],cadena3[i]
-        return cadena3
         """
         Cruza dos individuos representados por sus cadenas
 

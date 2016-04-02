@@ -19,8 +19,10 @@ blocales.py y nreinas.py vistas en clase.
 """
 
 import random
+import math
+import copy
 
-__author__ = 'Escribe aquí tu nombre'
+__author__ = 'Nan'
 
 
 class Genetico:
@@ -124,6 +126,7 @@ class Genetico:
         @return Una lista de hijos (listas de cromosomas a su vez)
 
         """
+
         return [self.cruza_individual(self.poblacion[i][:],
                                       self.poblacion[j][:])
                 for (i, j) in parejas]
@@ -273,7 +276,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_poblacion):
+    def __init__(self, problema, n_poblacion, generaciones, prob_mutacion=0.05):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -285,9 +288,35 @@ class GeneticoPermutaciones2(Genetico):
         """
         self.nombre = 'propuesto por el alumno'
         Genetico.__init__(self, problema, n_poblacion)
-        #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
-        #
+        self.poblacion = [problema.estado_aleatorio() for _ in range(n_poblacion)]
+        self.prob_mutacion = prob_mutacion
+        self.iter = 0
+        self.K = generaciones/2
+
+    @staticmethod
+    def estado_a_cadena(estado):
+        num = 0
+        dom = range(len(estado))
+        for i in range(len(estado)-1):
+            num = (len(dom)-1)*(dom.index(estado[i]) + num)
+            dom.remove(estado[i])
+        return [num, len(estado)]
+
+    @staticmethod
+    def cadena_a_estado(cadena):
+        estado = list(range(cadena[1]))
+        num = cadena[0]
+        estado[-1] = 0
+        for i in range(2, cadena[1]+1):
+            estado[-i] = num%i
+            num = num/i
+        dom = range(cadena[1])
+        for i in range(len(estado)):
+            aux = estado[i]
+            estado[i] = dom[estado[i]]
+            dom.remove(dom[aux])
+        return tuple(estado)
+       
 
     def calcula_aptitud(self, individuo):
         """
@@ -304,7 +333,8 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+
+        return 1/(1.0+self.problema.costo(self.cadena_a_estado(individuo)))
 
     def seleccion(self):
         """
@@ -320,9 +350,37 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        parejas, self.horny_lvl = list(), list()
 
-    def cruza_individual(self, cadena1, cadena2):
+        for i in range(self.n_poblacion):
+            self.horny_lvl.append(math.exp(self.iter*self.aptitud[i]/self.K))
+        total = sum(self.horny_lvl)
+        while len(parejas) < self.n_poblacion-1:
+            r = random.random()*total
+            suma = 0
+            p = [-len(parejas),(-len(parejas)-1)]
+            for i in range(self.n_poblacion):
+                suma = suma + self.horny_lvl[i]
+                if suma >= r:
+                    p[0] = i
+                    break
+            r = random.random()*(total - self.horny_lvl[p[0]])
+            suma = 0
+            for i in range(self.n_poblacion):
+                if i == p[0]:
+                    continue
+                suma = suma + self.horny_lvl[i]
+                if suma >= r:
+                    p[1] = i
+                    break
+            parejas.append(tuple(p))
+        print parejas
+        print self.iter, self.aptitud[0], self.aptitud[-1]
+        self.iter = self.iter+1
+        return parejas
+        #return [(int(i/2), i+1) for i in range(self.n_poblacion/2)]
+
+    def cruza_individual(self, c1, c2):
         """
         Cruza dos individuos representados por sus cadenas
 
@@ -338,7 +396,14 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        chrom, bit, fact = 0, 1, math.factorial(c1[1])
+        apt1, apt2 = self.calcula_aptitud(c1), self.calcula_aptitud(c2)
+        prob1 = (3*apt1+apt2)/(4*(apt1+apt2))
+        while bit < fact:
+            chrom = chrom | (c1[0] & bit if random.random()<prob1 else c2[0] & bit)
+            bit = bit*2
+
+        return [chrom, c1[1]]
 
     def mutacion(self, poblacion):
         """
@@ -356,7 +421,15 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        fact = math.factorial(poblacion[0][1])
+        for ind in poblacion:
+            bit = 1
+            while bit < fact:
+                if random.random() < self.prob_mutacion:
+                    ind[0] = ind[0] ^ bit
+                bit = bit*2
+        return poblacion
+
 
     def reemplazo(self, hijos):
         """
@@ -376,6 +449,9 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        self.poblacion = self.poblacion[:1] + hijos
+        self.poblacion.sort(key=self.calcula_aptitud, reverse=True)
+        self.aptitud = [self.calcula_aptitud(i) for i in self.poblacion]
 
 
 class ProblemaTonto(object):

@@ -57,14 +57,16 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
-    #
+    #       8: n=10, g=50
+    #       16: n=30, g=400
+    #       32: n=128, g=2500
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
 
-    n_poblacion = 32
-    generaciones = 100
+    n_poblacion = 30
+    generaciones = 400
     prob_mutacion = 0.05
 
     alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(16),
@@ -86,15 +88,16 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
-    #
+    #       8: n=10, g=50
+    #       16: n=200, g=1500 (talvez)
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
 
-    # n_poblacion, generaciones = 32, 100
-    # # Agrega aqui las variables propias de tu algoritmo
-    # alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
-    #                                            n_poblacion)
-    # solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    # print solucion
+    n_poblacion, generaciones = 200, 1500
+    # Agrega aqui las variables propias de tu algoritmo
+    alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
+                                               n_poblacion, generaciones)
+    solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
+    print solucion

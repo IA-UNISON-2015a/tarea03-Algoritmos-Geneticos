@@ -19,6 +19,7 @@ blocales.py y nreinas.py vistas en clase.
 """
 
 import random
+import copy
 
 __author__ = 'Escribe aquí tu nombre'
 
@@ -51,7 +52,7 @@ class Genetico:
         self.aptitud = [self.calcula_aptitud(individuo)
                         for individuo in self.poblacion]
 
-    def busqueda(self, n_generaciones=30):
+    def busqueda(self, n_generaciones=30000000000):
         """
         Algoritmo genético general
 
@@ -273,7 +274,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_poblacion,mutacion=0.1):
+    def __init__(self, problema, n_poblacion,mutacion=0.05):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -284,12 +285,15 @@ class GeneticoPermutaciones2(Genetico):
 
         """
         self.nombre = 'propuesto por el alumno'
-        self.mutacion = mutacion
-        self.poblacion = n_poblacion
+        self.muta = mutacion
+
+        self.n_poblacion = n_poblacion
         Genetico.__init__(self, problema, n_poblacion)
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
         #
+        self.poblacion = [self.estado_a_cadena(problema.estado_aleatorio())
+                          for _ in range(n_poblacion)]
 
     def calcula_aptitud(self, individuo):
         """
@@ -309,6 +313,11 @@ class GeneticoPermutaciones2(Genetico):
         costo = self.problema.costo(self.cadena_a_estado(individuo))
         return (costo**2)/costo*0.5
 
+    def seleccion_individual(self):
+        a = random.randint(0,self.n_poblacion-1)
+        b = random.randint(0,self.n_poblacion-1)
+        return a, b
+
     def seleccion(self):
         """
         Seleccion de estados
@@ -323,12 +332,17 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
+        """
         parejas = []
         for x in xrange(10):
             a = random.randint(0,10)
             b = random.randint(0,10)
             parejas.append((a, b))
         return parejas
+        """
+
+        return [self.seleccion_individual()
+                for _ in range(self.n_poblacion)]
 
 
     def cruza_individual(self, cadena1, cadena2):
@@ -348,14 +362,11 @@ class GeneticoPermutaciones2(Genetico):
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
         hijo = []
-        while len(hijo) != 10:
-            for i in xrange(10):
-                if i % 2 == 0 and not cadena1[i] in hijo:
-                    hijo.append(cadena1[i])
-                elif not cadena2[i] in hijo:
-                    hijo.append(cadena2[i])
-                elif i <=9:
-                    hijo.append(cadena1[i+1])
+
+        hijo = copy.deepcopy(cadena1)
+        num = random.randint(0,len(hijo))
+        i1,i2 = hijo.index(5), cadena2.index(5)
+        hijo[i1], hijo[i2] = hijo[i2], hijo[i1]
 
 
         return hijo
@@ -376,6 +387,11 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        for individuo in poblacion:
+            for x in range(len(individuo)):
+                if random.random() < self.muta:
+                    k = random.randint(0, len(individuo) - 1)
+                    individuo[x], individuo[k] = individuo[k], individuo[x]
 
 
     def reemplazo(self, hijos):
@@ -468,7 +484,7 @@ if __name__ == "__main__":
     print "\n\nSi iteramos por 30 generaciones tenemos que\n" \
           "el estado que encontramos con menor costo es:\n"
     print mejor
-    print "\nQue debería tener el 0 y el 1 a los extremos"
+
 
 
 

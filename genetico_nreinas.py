@@ -57,21 +57,26 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
+    #       8 reinas: 8,500,0.02
+    #       16 reinas: 17,300,0.03
+    #       32 reinas: 20,300,0.03
     #
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
+    #       Se rige por el tamaño de la población, es el valor que determina cuantas generaciones se ocupan, como
+    #       pude notar en 16 y 32 reinas, valores similares y tiempos cercanos (16 -> menos del segundo, 32 -> ~1.2 segundos)
     #
 
-    n_poblacion = 32
-    generaciones = 100
-    prob_mutacion = 0.05
+    # n_poblacion = 20
+    # generaciones = 300
+    #prob_mutacion = 0.03
 
-    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(16),
-                                              n_poblacion, prob_mutacion)
+    #alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(32),
+    #                                          n_poblacion, prob_mutacion)
 
-    solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    print solucion
+    #solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
+    #print solucion
 
     ###########################################################################
     #                          30 PUNTOS
@@ -92,9 +97,10 @@ if __name__ == "__main__":
     #       segun tu experiencia?
     #
 
-    # n_poblacion, generaciones = 32, 100
-    # # Agrega aqui las variables propias de tu algoritmo
-    # alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
-    #                                            n_poblacion)
-    # solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    # print solucion
+    n_poblacion = 200
+    generaciones = 10
+    prob_mutacion = 0.1
+    # Agrega aqui las variables propias de tu algoritmo
+    alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(8), n_poblacion,prob_mutacion)
+    solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
+    print solucion

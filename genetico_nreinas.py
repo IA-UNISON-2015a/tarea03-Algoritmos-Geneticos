@@ -62,12 +62,15 @@ if __name__ == "__main__":
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
+    # 8 reinas = 32, 30 (Costo 0)
+    # 16 reinas = 64,120  (Costo 0 en la mayoria de las veces, 1 a veces)
+    # 32 reinas = 
 
     n_poblacion = 32
-    generaciones = 100
+    generaciones = 30
     prob_mutacion = 0.05
 
-    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(16),
+    alg_gen = genetico.GeneticoPermutaciones1(nreinas.ProblemaNreinas(8),
                                               n_poblacion, prob_mutacion)
 
     solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
@@ -91,10 +94,13 @@ if __name__ == "__main__":
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
+    # 8 reinas = 32,30 (costo 0 excepto en raras ocasiones)
+    # 16 reinas = no pude encontrar nada que me diera costo 0 consistentemente (con 100,1000 me da costo 2)
+    # 32 reinas = menos :(
 
-    # n_poblacion, generaciones = 32, 100
-    # # Agrega aqui las variables propias de tu algoritmo
-    # alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
-    #                                            n_poblacion)
-    # solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
-    # print solucion
+    n_poblacion, generaciones = 400, 12
+    #Agrega aqui las variables propias de tu algoritmo
+    alg_gen = genetico.GeneticoPermutaciones2(nreinas.ProblemaNreinas(16),
+                                                n_poblacion)
+    solucion = prueba_genetico(alg_gen, n_poblacion, generaciones, True)
+    print solucion

@@ -19,7 +19,7 @@ blocales.py y nreinas.py vistas en clase.
 """
 
 import random
-
+import math
 __author__ = 'Escribe aquí tu nombre'
 
 
@@ -44,8 +44,9 @@ class Genetico:
         Internamente guarda self.npoblacion y self.poblacion
 
         """
+        poblacion = list(range(n_poblacion))
         self.poblacion = [self.estado_a_cadena(self.problema.estado_aleatorio())
-                          for _ in range(n_poblacion)]
+                          for _ in poblacion]
         self.poblacion.sort(key=self.calcula_aptitud, reverse=True)
         self.n_poblacion = n_poblacion
         self.aptitud = [self.calcula_aptitud(individuo)
@@ -273,7 +274,7 @@ class GeneticoPermutaciones2(Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_poblacion):
+    def __init__(self, problema, n_poblacion, prob_muta = 0.1, prob_cruza = 0.8):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -288,7 +289,8 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
         #
-
+        self.prob_muta = prob_muta
+        self.prob_cruza = prob_cruza
     def calcula_aptitud(self, individuo):
         """
         Calcula la adaptación de un individuo al medio, mientras más adaptado
@@ -304,6 +306,9 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        costo = self.problema.costo(self.cadena_a_estado(individuo))
+
+        return  1/(1+costo) + 1/(1+math.exp(costo))
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def seleccion(self):
@@ -319,7 +324,22 @@ class GeneticoPermutaciones2(Genetico):
         #####################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
-        #
+        #Torneo Binario
+        selected = []
+        j = self.aptitud[:]
+        for i in range(self.n_poblacion*2):
+            while True:
+                k = list(range(0,self.n_poblacion))
+                r = random.choice(k)
+                del k[r-1]
+                r1 = random.choice(k)
+                if i%2 == 0: break
+                if r != selected[-1] and r1 != selected[-1]: break
+            if j[r] < j[r1]:
+                selected.append(r)
+            else: selected.append(r1)
+        it = iter(selected)
+        return list(zip(it,it))
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza_individual(self, cadena1, cadena2):
@@ -337,8 +357,31 @@ class GeneticoPermutaciones2(Genetico):
         #####################################################################
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
-        #
+        #PBX - position-based crossover
+        hijo = []
+        j={}
+        r = random.randint(1,len(cadena1)-1)
+        for i in range(0,r):
+            r1 = random.randint(1,len(cadena1)-1)
+            j[r1] = cadena1[r1]
+        sorted(j.keys())
+        for i in range(0,self.n_poblacion):
+            if i in j.keys():
+                for k in cadena1:
+                    if k not in j.items():
+                        if k not in hijo[:i]:
+                            hijo.append(k)
+                            break
+            if i not in j.keys():
+                for k in cadena2:
+                    if k not in j.items():
+                        if k not in hijo[:i]:
+                            hijo.append(k)
+                            break
+
+        return hijo
         raise NotImplementedError("¡Este metodo debe ser implementado!")
+
 
     def mutacion(self, poblacion):
         """
@@ -356,6 +399,18 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        poblacion_mutada = []
+        for individuo in poblacion:
+            individuo = list(individuo)
+            for i in range(len(individuo)):
+                if random.random() < self.prob_muta:
+                    k = random.randint(0, len(individuo) - 1)
+                    if (k < len(individuo) - 1):
+                        individuo[k+1], individuo[k] = individuo[k], individuo[k+1]
+                    else:
+                        individuo[0], individuo[k] = individuo[k], individuo[0]
+            poblacion_mutada.append(tuple(individuo))
+        return poblacion_mutada
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def reemplazo(self, hijos):
@@ -376,6 +431,15 @@ class GeneticoPermutaciones2(Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        hijos.sort(key=self.calcula_aptitud, reverse=True)
+        apt_hijos = [self.calcula_aptitud(individuo) for individuo in hijos]
+        if apt_hijos[0] > self.aptitud[0]:
+            self.poblacion = hijos[:self.n_poblacion]
+            self.aptitud = apt_hijos[:self.n_poblacion]
+        else:
+            self.poblacion = [self.poblacion[0]] + hijos[:self.n_poblacion - 1]
+            self.aptitud = [self.aptitud[0]] + apt_hijos[:self.n_poblacion - 1]
+        del(hijos)
 
 
 class ProblemaTonto(object):
@@ -389,7 +453,7 @@ class ProblemaTonto(object):
         self.n = n
 
     def estado_aleatorio(self):
-        lista = range(self.n)
+        lista = list(range(self.n))
         random.shuffle(lista)
         return tuple(lista)
 
@@ -408,45 +472,46 @@ if __name__ == "__main__":
 
     # Un objeto genético con permutaciones con una población de
     # 10 individuos y una probabilidad de mutacion de 0.1
-    genetico = GeneticoPermutaciones1(ProblemaTonto(10), 10, 0.1)
+    genetico = GeneticoPermutaciones2(ProblemaTonto(10), 10, 0.1)
 
-    print "El nombre del algortimo es: ", genetico.nombre
-    print "Y el conjunto de estados iniciales es: "
+    print ("El nombre del algortimo es: ", genetico.nombre)
+    print ("Y el conjunto de estados iniciales es: ")
     for (i, cadena) in enumerate(genetico.poblacion):
         assert isinstance(cadena, list)
-        print i, ': ', cadena, " aptitud = ", genetico.aptitud[i]
-    print "\nPor la forma de estar programado" \
-          "la aptitud debe estar en orden descendente\n"
+        print (i, ': ', cadena, " aptitud = ", genetico.aptitud[i])
+    print ("\nPor la forma de estar programado"
+          "la aptitud debe estar en orden descendente\n")
 
     parejas = genetico.seleccion()
-    print "Un ejemplo de parejitas sería:"
+    print("Parejas: \n", parejas)
+    print ("Un ejemplo de parejitas sería:")
     for (i, j) in parejas:
-        print "estado ", i, " se reproduce con el estado ", j
-    print "\nLos mejores se espera se reproduzcan más\n"
+        print ("estado ", i, " se reproduce con el estado ", j)
+    print ("\nLos mejores se espera se reproduzcan más\n")
 
     cadena1 = genetico.poblacion[parejas[0][0]]
     cadena2 = genetico.poblacion[parejas[0][1]]
     hijo = genetico.cruza_individual(cadena1, cadena2)
-    print "Y para observar la cruza tenemos: "
-    print "progenitor 1: ", cadena1
-    print "progenitor 2: ", cadena2
-    print "descendiente: ", hijo
+    print ("Y para observar la cruza tenemos: ")
+    print ("progenitor 1: ", cadena1)
+    print ("progenitor 2: ", cadena2)
+    print ("descendiente: ", hijo)
 
     hijos = genetico.cruza(parejas)
-    print "Haciendo una cruza de todas las parejas tenemos que: "
+    print ("Haciendo una cruza de todas las parejas tenemos que: ")
     for (i, cadena) in enumerate(hijos):
         assert isinstance(cadena, list)
-        print i, ': ', cadena
+        print (i, ': ', cadena)
     genetico.mutacion(hijos)
-    print "Y después de la mutación tenemos:"
+    print ("Y después de la mutación tenemos:")
     for (i, cadena) in enumerate(hijos):
         assert isinstance(cadena, list)
-        print i, ': ', cadena
+        print (i, ': ', cadena)
 
     mejor = genetico.busqueda(30)
-    print "\n\nSi iteramos por 30 generaciones tenemos que\n" \
-          "el estado que encontramos con menor costo es:\n"
-    print mejor
-    print "\nQue debería tener el 0 y el 1 a los extremos"
+    print ("\n\nSi iteramos por 30 generaciones tenemos que\n"
+          "el estado que encontramos con menor costo es:\n")
+    print (mejor)
+    print ("\nQue debería tener el 0 y el 1 a los extremos")
 
 

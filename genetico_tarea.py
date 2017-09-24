@@ -55,10 +55,13 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        #           CONVERSION A CADENA BINARIA
-        val=estado
-        lista=[]
+        dominio=list(range(0,len(estado)))
+        cadena=[]
+        for x in range(len(estado)):
+            cadena.append(dominio.index(estado[x]))
+            dominio.remove(estado[x])
         
+        return cadena
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     @staticmethod
@@ -74,6 +77,14 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        dominio=list(range(0,len(cadena)))
+        estado=[]
+
+        for x in range(len(cadena)):
+            estado.append(dominio[cadena[x]])
+            dominio.remove(dominio[cadena[x]])
+    
+        return tuple(estado)
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
         

@@ -83,20 +83,37 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
-    #
+    """
+    32 reinas:
+        
+    64 reinas:
+        tardo en promedio 4 minutos con los sig. valores:
+            n_poblacion=300
+            generaciones=400
+            prob_mutacion=0.01
+            
+    32 reinas:
+        tardo en promedio 22 seg con los sig. valores
+        n_poblacion=100
+        generaciones=400
+        prob_mutacion=0.02
+    """
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
-    #
+    """
+    
+    
+    """
+    n_poblacion = 100
+    generaciones = 400
+    prob_mutacion = 0.02
 
-    n_poblacion = 64
-    generaciones = 100
-    prob_mutacion = 0.05
-
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
-                                             n_poblacion, prob_mutacion)
-
-    solucion = prueba_genetico(alg_gen, generaciones, True)
+    for i in range(0,20):
+        alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(32),
+                                                 n_poblacion, prob_mutacion)
+    
+        solucion = prueba_genetico(alg_gen, generaciones, True)
 
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como

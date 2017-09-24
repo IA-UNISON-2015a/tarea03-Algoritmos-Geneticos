@@ -12,7 +12,7 @@ genético para resolver problemas de permutaciones
 import random
 import genetico
 
-__author__ = 'Tu nombre'
+__author__ = 'Erick Fernando López Fimbres'
 
 
 class GeneticoPermutacionesPropio(genetico.Genetico):
@@ -20,23 +20,28 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_población):
+    def __init__(self, problema, n_población,p_muta,p_cruza,tipo_seleccion):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
 
         Para esta tarea vamos a cambiar la forma de representación
         para que se puedan utilizar operadores clásicos (esto implica
-        reescribir los métodos estáticos cadea_a_estado y
+        reescribir los métodos estáticos cadena_a_estado y
         estado_a_cadena).
 
         """
-        self.nombre = 'propuesto por el alumno'
+        self.nombre = 'Erick Fernando Lopez Fimbres'
         super().__init__(problema, n_población)
+        #porcentaje de cruza -->.6
+        #seleccion: elitista o otro
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
         #
-
+        self.p_muta=p_muta
+        self.p_cruza=p_cruza
+        self.tipo_selección=tipo_seleccion
+        
     @staticmethod
     def estado_a_cadena(estado):
         """
@@ -50,6 +55,10 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        #           CONVERSION A CADENA BINARIA
+        val=estado
+        lista=[]
+        
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     @staticmethod

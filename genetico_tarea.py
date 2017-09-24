@@ -8,7 +8,7 @@ En este módulo vas a desarrollar tu propio algoritmo
 genético para resolver problemas de permutaciones
 
 """
-
+import exp
 import random
 import genetico
 
@@ -20,7 +20,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_población,p_muta,p_cruza,tipo_seleccion):
+    def __init__(self, problema, n_población):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -32,15 +32,18 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         self.nombre = 'Erick Fernando Lopez Fimbres'
+        
+        #Ya inicializa la población
         super().__init__(problema, n_población)
         #porcentaje de cruza -->.6
         #seleccion: elitista o otro
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
         #
-        self.p_muta=p_muta
-        self.p_cruza=p_cruza
-        self.tipo_selección=tipo_seleccion
+        print(self.población)
+        #self.p_muta=p_muta
+        #self.p_cruza=p_cruza
+        #self.tipo_selección=tipo_seleccion
         
     @staticmethod
     def estado_a_cadena(estado):
@@ -100,8 +103,27 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        K=50
+        return exp(-K*self.problema.costo(self.cadena_a_estado(individuo)))
         raise NotImplementedError("¡Este metodo debe ser implementado!")
-
+    
+    def torneoArtesMarciales(población):
+        
+        competidores=población[:]
+        #varajeamos la poblacion
+        random.shuffle(competidores)
+        #escojemos 2 individuos 
+        if(competidores[0][0] > competidores[1][0]):
+            g1=competidores[0]
+        else:
+            g1=competidores[1]
+        if(competidores[-1][0] > competidores[-2][0]):
+            g2=competidores[-1]
+        else:
+            g2=competidores[-2]
+        #regresamos los que tengan mejor adaptacion
+        return (g1,g2)
+    
     def selección(self):
         """
         Seleccion de estados mediante método diferente a la ruleta
@@ -113,6 +135,10 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
+        
+        return [self.torneoArtesMarciales()
+                for _ in range(self.n_población)]
+
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza_individual(self, cadena1, cadena2):

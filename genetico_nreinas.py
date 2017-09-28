@@ -83,17 +83,21 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
-    #
-    #
+    #       64 reinas poblacion 512, 500 iteraciones
+    #       32 reinas poblacion 256, 400 iteraciones
+    #       16 reinas poblacion 128, 300 iteraciones
+    #       8  reinas poblacion 64,  200 iteraciones
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
+    #       entre mas crece mayor debe de ser la poblacion o las iteraciones
+    #       y reducir la mutacion, lo cual no hice en esta ocasion
     #
 
-    n_poblacion = 64
-    generaciones = 100
+    n_poblacion = 256
+    generaciones = 200
     prob_mutacion = 0.05
 
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
+    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(64),
                                              n_poblacion, prob_mutacion)
 
     solucion = prueba_genetico(alg_gen, generaciones, True)

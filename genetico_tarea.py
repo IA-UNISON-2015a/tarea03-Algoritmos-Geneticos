@@ -151,6 +151,19 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
+        
+        # Position-based Crossover para permutaciones
+        #Cruza uniforme
+        Pc = 0.4
+        hijo=[]
+        for x in range(len(cadena1)):
+            print(random.random())
+            if(random.random()<= Pc):
+                hijo.append(cadena1[x])
+            else:
+                hijo.append(cadena2[x])
+        
+        return hijo
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def mutación(self, individuos):

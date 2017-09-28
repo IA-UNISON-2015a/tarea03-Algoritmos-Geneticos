@@ -23,7 +23,7 @@ class ProblemaNreinas(genetico.Problema):
         self.n = n
 
     def estado_aleatorio(self):
-        estado = list(range(self.n))
+        estado = list( range( self.n ) )
         shuffle(estado)
         return tuple(estado)
 

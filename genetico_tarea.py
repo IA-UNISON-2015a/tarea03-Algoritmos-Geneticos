@@ -213,7 +213,31 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-
+        nuevaG=list()
+        reemplazo = [(self.adaptación(individuo), individuo)
+                     for individuo in individuos]
+        reemplazo.sort(reverse=True)
+        self.población.sort(reverse=True)
+        
+        for x in range(len(self.población)):
+            if reemplazo[x][0] > self.población[x][0]:
+                nuevaG.append(reemplazo[x])
+            else:
+                nuevaG.append(self.población[x])
+        self.población=nuevaG[:]
+        
+        """
+        part=math.ceil(len(self.población)/4)
+        self.población.sort(reverse=True)
+        veteranos=self.población[:part]
+        print("veteranos",veteranos)
+        
+        reemplazo = [(self.adaptación(individuo), individuo)
+                     for individuo in individuos]
+        
+        reemplazo.sort(reverse=True)
+        self.población = veteranos[:] + reemplazo[part:self.n_población]
+        """
 if __name__ == "__main__":
     # Un objeto genético con permutaciones con una población de
     # 10 individuos y una probabilidad de mutacion de 0.1

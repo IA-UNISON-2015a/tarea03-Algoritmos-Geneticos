@@ -11,6 +11,8 @@ genético para resolver problemas de permutaciones
 
 import random
 import genetico
+import math
+import statistics as stats
 
 __author__ = 'Tu nombre'
 
@@ -20,7 +22,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_población):
+    def __init__(self, problema, n_población, prob_muta=0.03,k=2):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -31,11 +33,14 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         estado_a_cadena).
 
         """
-        self.nombre = 'propuesto por el alumno'
+        self.prob_muta = prob_muta
+        self.k=k
+        self.nombre = 'propuesto por Belen'
         super().__init__(problema, n_población)
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
-        #
+        # 
+        
 
     @staticmethod
     def estado_a_cadena(estado):
@@ -50,6 +55,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        return list(estado)
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     @staticmethod
@@ -64,6 +70,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         """
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
+        return tuple(cadena)
         #
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
@@ -80,6 +87,12 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
+        # habia intentado ésta pero daba resultados muy deprimentes
+        # return math.exp(self.k*self.problema.costo(self.cadena_a_estado(individuo)))
+        
+        
+        return 1 / (1.0 + self.k*self.problema.costo(self.cadena_a_estado(individuo)))
+        
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def selección(self):
@@ -92,7 +105,17 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         """
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
+        # Se revolverán todos los elementos de la población y se seleccionarán..
+        # el primero con el último, el segundo con el penúltimo etc...
         #
+         
+        #aún no se si ordenar a la apoblación....
+        población = self.población[:]
+        población.sort()
+        n = len(población)
+        
+        return [ (i,(i+1)%n)for i in range(n)]
+
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza_individual(self, cadena1, cadena2):
@@ -105,6 +128,22 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
+        auxiliar = cadena1[:] if random.random() < 0.5 else cadena2[:]
+        hijo=[]
+        for i in range(len(cadena1)):
+           
+            if i%2==0:
+                hijo.append(cadena1[i] if cadena1[i] not in hijo else cadena2[i] if cadena2[i] not in hijo else auxiliar.pop(0))
+    
+            else:
+                hijo.append(cadena2[i] if cadena2[i] not in hijo else cadena1[i] if cadena1[i] not in hijo else auxiliar.pop(0))
+            
+            if hijo[i] in auxiliar:
+                auxiliar.remove(hijo[i])
+
+            
+        return hijo
+         
         raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def mutación(self, individuos):
@@ -122,7 +161,17 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        
+        dim = len(individuos[0])
+        
+        if random.random() < self.prob_muta:
+            for individuo in individuos:
+                aux=individuo[0]
+                for i in range(1,dim):
+                    individuo[i-1] = individuo[i]
+                individuo[dim-1]=aux
+            
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def reemplazo_generacional(self, individuos):
         """
@@ -139,7 +188,34 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-
+        # La primera opción fue considerando la media de las adaptacinones, los
+        # más cercanos a ella sobreviven
+        """
+        prom = stats.mean([self.adaptación(individuo) for individuo in individuos])
+        reemplazo = [(abs(self.adaptación(individuo)-prom), individuo)
+                     for individuo in individuos]
+                     
+        reemplazo.sort()
+        
+        self.población = [ (self.adaptación(reemplazo[i][1]), reemplazo[i][1]) for i in range(self.n_población)]
+        """
+        
+         #La segunda opción fue aleatoria escoger "aleatoriamente"
+        """
+        reemplazo = [(self.adaptación(individuo), individuo)
+                     for individuo in individuos]
+                     
+        random.shuffle(reemplazo)
+        self.población = reemplazo[:self.n_población]
+        """
+        
+        # la tercera fue nuevamente el elitísmo
+        reemplazo = [(self.adaptación(individuo), individuo)
+                     for individuo in individuos]
+        reemplazo.append(max(self.población))
+        reemplazo.sort(reverse=True)
+        self.población = reemplazo[:self.n_población]
+    
 
 if __name__ == "__main__":
     # Un objeto genético con permutaciones con una población de

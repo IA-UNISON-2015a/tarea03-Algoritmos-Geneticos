@@ -14,8 +14,10 @@ import genetico
 from random import randint
 from random import random
 import genetico_nreinas
+import heapq
+from time import time
 
-__author__ = 'Tu nombre'
+__author__ = 'José Roberto Salazar Espinoza'
 
 
 class GeneticoPermutacionesPropio(genetico.Genetico):
@@ -23,7 +25,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
     Clase con un algoritmo genético adaptado a problemas de permutaciones
 
     """
-    def __init__(self, problema, n_población):
+    def __init__(self, problema, n_población,prob_muta=0.01):
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
@@ -34,18 +36,16 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         estado_a_cadena).
 
         """
+        self.prob_muta = prob_muta
         self.nombre = 'propuesto por Roberto Salazar'
         super().__init__(problema, n_población)
-        #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
-        #
 
     def torneo(self,población):
         #se generan dos indices aleatorios diferentes
-        n1 = randint(0,len(población))
-        n2 = randint(0,len(población))
+        n1 = randint(0,len(población) - 1)
+        n2 = randint(0,len(población) - 1)
         while n2 == n1:
-            n2 = randint(0,len(población))
+            n2 = randint(0,len(población) - 1)
         a1,a2 = población[n1][0],población[n2][0]
         #regresa el mas adaptado de los dos
         return n1 if a1 > a2 else n2
@@ -110,7 +110,8 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         Por default usa 1 / (costo(estado) + 1)
         """
-        return 1 / (1.0 + self.problema.costo(self.cadena_a_estado(individuo)))
+        #función de adaptación es el negativo del costo
+        return -self.problema.costo(self.cadena_a_estado(individuo))
 
     def selección_individual(self):
         """
@@ -119,6 +120,8 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         @return: Una tupla con los pares a unirse
 
         """
+        #hace practicamente lo mismo que la definida en genetico.py solo que
+        #ahora es con torneos
         i = self.torneo(self.población)
         j = self.torneo(self.población[:i] + self.población[i+1:])
         return i, j if j < i else j+1
@@ -138,11 +141,15 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         @return: Un individuo
 
         """
+        #cruza con 2 cortes sencilla
         n = len(cadena1)
-        hijo = []
         for i in range(n):
-            num = random()
-            hijo.append(cadena1[i] if num < 0.5 else cadena2[i])
+            corte1 = randint(0,n-2)
+            corte2 = randint(0,n-2)
+            while corte1 == corte2:
+                corte2 = randint(0,n-2)
+            mayor,menor = max((corte1,corte2)),min((corte1,corte2))
+            hijo = cadena2[:menor] + cadena1[menor:mayor] + cadena2[mayor:]
         return hijo
 
     def mutación(self, individuos):
@@ -154,12 +161,17 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
                  en la misma lista
 
         """
-        
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #muta todos los elementos de cada individuo con probabilidad prob_muta
+        n = len(individuos[0])
+        for individuo in individuos:
+            for i in range(n):
+                if random() < self.prob_muta:
+                    individuo[i] = randint(0,n-i)
+
 
     def reemplazo_generacional(self, individuos):
         """
-        Realiza el reemplazo generacional diferente al elitismo
+        Realiza el reemplazo generacional
 
         @param individuos: Una lista de cromosomas de hijos que pueden
                            usarse en el reemplazo
@@ -169,16 +181,21 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         mejor que lo que hemos encontrado hasta el momento.
 
         """
-        #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
-        #
-
+        #mete los 5 mejores individuos a la nueva población
+        reemplazo = [(self.adaptación(individuo), individuo)
+                     for individuo in individuos]
+        nmejores = heapq.nlargest(5,self.población)
+        reemplazo.extend(nmejores)
+        reemplazo.sort(reverse=True)
+        self.población = reemplazo[:self.n_población]
 
 if __name__ == "__main__":
-    genetico = GeneticoPermutacionesPropio(genetico_nreinas.ProblemaNreinas(8), 10)
-    print(genetico.población[0][1])
-    print(genetico.población[1][1])
-    print(genetico.cruza_individual(genetico.población[0][1],genetico.población[1][1]))
+    genetico = GeneticoPermutacionesPropio(genetico_nreinas.ProblemaNreinas(16), 120,0.08)
+    t_inicial = time()
+    estado = genetico.busqueda(150)
+    t_final = time()
+    print(estado,genetico.problema.costo(estado))
+    print("tiempo: ",t_final - t_inicial)
     # Un objeto genético con permutaciones con una población de
     # 10 individuos y una probabilidad de mutacion de 0.1
     # g_propio = GeneticoPermutacionesPropio(genetico.ProblemaTonto(10), 10)

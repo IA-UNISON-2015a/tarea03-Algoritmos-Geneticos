@@ -132,11 +132,15 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
-        length = (len(cadena1))
-        corte1 = random.randint(0, length-1)
-        corte2 = random.randint(corte1, length)
-        hijo = cadena1[:corte1] + cadena2[corte1:corte2] + cadena1[corte2:]
-        return hijo
+        
+        if random.random() < self.prob_cruce:
+            return cadena1 if random.random() < 0.5 else cadena2
+        else:
+            length = (len(cadena1))
+            corte1 = random.randint(0, length-1)
+            corte2 = random.randint(corte1, length)
+            hijo = cadena1[:corte1] + cadena2[corte1:corte2] + cadena1[corte2:]
+            return hijo
 
 
     def mutación(self, individuos):
@@ -168,8 +172,6 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
                            usarse en el reemplazo
         @return: None (todo lo cambia internamente)
 
-        Por default usamos solo el elitismo de conservar al mejor, solo si es
-        mejor que lo que hemos encontrado hasta el momento.
 
         """
         #
@@ -177,8 +179,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         reemplazo = [(self.adaptación(individuo), individuo)
                      for individuo in individuos]
-        reemplazo.append(max(self.población))
-        reemplazo.sort(reverse=True)
+        
         self.población = reemplazo[:self.n_población]
 
 

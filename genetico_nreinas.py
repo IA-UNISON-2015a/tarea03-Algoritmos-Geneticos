@@ -11,8 +11,9 @@ from itertools import combinations
 from random import shuffle
 import genetico
 import genetico_tarea
+#import time
 
-__author__ = 'juliowaissman'
+__author__ = 'Erick Fernando López Fimbres'
 
 class ProblemaNreinas(genetico.Problema):
     """
@@ -97,24 +98,42 @@ if __name__ == "__main__":
         n_poblacion=100
         generaciones=400
         prob_mutacion=0.02
+    
+    8 reinas
+        tardo en promedio .14 seg con los sig. valores
+        n_poblacion=20
+        generaciones=100
+        prob_mutacion=0.02
+    
     """
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
     """
-    
+    Hay que poner una poblacion mas o menos chica y tener un numero de
+    generaciones muco mayor para asi ir afinando a los individuos mas
+    optimos, aunque cabe resaltar que cuando los individuos no salen del minimo
+    global entonces es cuando la mutacion hace el paro por eso tambien es
+    importante variarla dependiendo de como se comporte la pobñación.
     
     """
-    n_poblacion = 100
-    generaciones = 400
+    n_poblacion = 20
+    generaciones =100
     prob_mutacion = 0.02
-
-    for i in range(0,20):
-        alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(32),
+    
+    
+    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(8),
                                                  n_poblacion, prob_mutacion)
     
-        solucion = prueba_genetico(alg_gen, generaciones, True)
-
+    solucion = prueba_genetico(alg_gen, generaciones, True)
+    
+    """
+    alg_gen = genetico_tarea.GeneticoPermutacionesPropio(ProblemaNreinas(8),
+                                                 n_poblacion, prob_mutacion)
+    
+    solucion = prueba_genetico(alg_gen, generaciones, True)
+    """
+    
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como
     # genetico_tarea.GeneticoPermutacionesPropio). De ser muchos
@@ -125,8 +144,32 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
-    #
+    """
+    8 reinas con
+        n_poblacion = 50
+        generaciones = 100
+        prob_mutacion=0.02
+        tiempo_promedio = 2.5 seg
+        
+    16 reinas con
+        n_poblacion = 80
+        generaciones = 300
+        prob_mutacion=0.2
+        tiempo_promedio = 15.8 seg
+    """
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
+    """
+    Depende mucho de el problema y tambien los metodos que implementaste
+    para realizar tu algoritmo genetico, en veces te va aconvenir no tener mucha
+    poblacion por la manera en que se realizan estos metodos.
+    
+    Entonces cuando necesitas 
+    hacer variar  un poco la poblacion es recomendable poner una prob de mutacion
+    un poco alta en uno de mis casos que tuve fue de que lo mejor que obtenia era costo 1
+    pero al elevar la mutacion hizo que pudiera encontrar el optimo global
+    Tambien aveces es recomendable tener poco numero de poblacion y mas o menos 
+    varias generaciones doble o el triple de la población
+    """

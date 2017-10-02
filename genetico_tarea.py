@@ -13,7 +13,7 @@ import random
 import genetico
 from itertools import combinations
 from operator import itemgetter
-from numpy import modf
+from numpy import modf, exp
 
 __author__ = 'Carlos Huguez'
 
@@ -84,9 +84,8 @@ class GeneticoPermutacionesPropio( genetico.Genetico ):
         """
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
-        #
-        return self.problema.costo( individuo )
-        #return sum( [ 1 for ( i, j ) in combinations( range( self.problema.n ), 2 ) if abs( individuo[i] - individuo[j] ) == abs( i - j ) ] )
+        
+        return 1 / ( self.problema.costo( individuo ) )
 
     def selección(self):
         """
@@ -208,10 +207,10 @@ class GeneticoPermutacionesPropio( genetico.Genetico ):
 
         for i in range( 0, len( self.población ), 2 ):    
         
-            if self.adaptación( self.población[i][1] ) < self.adaptación( self.población[i+1][1] ):
+            if self.adaptación( self.población[i][1] ) > self.adaptación( self.población[i+1][1] ):
                 wawa.append( ( self.población[i][0] , [ i for i in self.población[i][1] ] ) )
             else:
-                wawa.append( ( self.población[i][0] , [ i for i in self.población[i+1][1] ] ) )
+                wawa.append( ( self.población[i+1][0] , [ i for i in self.población[i+1][1] ] ) )
         
         for individuo in individuos:
             wawa.append( ( self.adaptación( individuo ), individuo ) )

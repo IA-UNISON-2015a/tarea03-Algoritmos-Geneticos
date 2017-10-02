@@ -63,6 +63,7 @@ def prueba_genetico(algo_genetico, n_generaciones, verbose=False):
             algo_genetico.problema.costo(solucion)))
         print("Tiempo de ejecución en segundos: {}".format(
             t_final - t_inicial))
+    
     return solucion
 
 
@@ -83,18 +84,31 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
-    #
+    #       se realizaron combinaciones de:
+    #       reinas = 8, 16, 32, 64
+    #       poblacion = 10, 50, 100, 200         
+    #       generaciones = 20, 100, 200, 400
+    #       mutacion = 0.01, 0.05, 0.1
+    #       
+    #       las mejores soluciones fueron
+    #       con 16 reinas, poblacion de 200 individuos, 100 generaciones        
+    #       y probabilidad de mutacion de 0.1
+    #            
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
+    #       en mi experiencias seria tener una mayor cantidad de individos
+    #       que de generaciones 
+    #       
     #
 
-    n_poblacion = 64
+    reinas = 16
+    n_poblacion = 10
     generaciones = 100
-    prob_mutacion = 0.05
+    prob_mutacion = 0.1
 
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
-                                             n_poblacion, prob_mutacion)
+    alg_gen = genetico_tarea.GeneticoPermutacionesPropio( ProblemaNreinas(reinas),
+                                             n_poblacion)
 
     solucion = prueba_genetico(alg_gen, generaciones, True)
 
@@ -108,8 +122,13 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
-    #
-    #
+    #       se realizo el mismo porcedimiento que arriba  
+    #       estos fueron los mejores: 
+    #       16 reinas con 10 individuos en la poblacion y 100 generaciones
+    #       ( la mutacion la tengo establecida por 1/L )
+    #   
+    #   
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
-    #
+    #       en este caso seria tener menos individuos y muchas generaciones
+    

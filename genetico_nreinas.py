@@ -8,7 +8,7 @@ de las n-reinas para aprender a ajustarlos y probarlos.
 
 from time import time
 from itertools import combinations
-from random import shuffle
+import random
 import genetico
 import genetico_tarea
 
@@ -24,7 +24,7 @@ class ProblemaNreinas(genetico.Problema):
 
     def estado_aleatorio(self):
         estado = list(range(self.n))
-        shuffle(estado)
+        random.shuffle(estado)
         return tuple(estado)
 
     def costo(self, estado):
@@ -54,6 +54,7 @@ def prueba_genetico(algo_genetico, n_generaciones, verbose=False):
     t_inicial = time()
     solucion = algo_genetico.busqueda(n_generaciones)
     t_final = time()
+    costo = algo_genetico.problema.costo(solucion)
     if verbose:
         print("\nUtilizando el AG: {}".format(algo_genetico.nombre))
         print("Con poblacion de dimensión {}".format(
@@ -63,7 +64,7 @@ def prueba_genetico(algo_genetico, n_generaciones, verbose=False):
             algo_genetico.problema.costo(solucion)))
         print("Tiempo de ejecución en segundos: {}".format(
             t_final - t_inicial))
-    return solucion
+    return costo, t_final-t_inicial
 
 
 if __name__ == "__main__":
@@ -88,15 +89,74 @@ if __name__ == "__main__":
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
     #
-
-    n_poblacion = 64
-    generaciones = 100
-    prob_mutacion = 0.05
-
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
+    """
+    b_tiempo = 100.0
+    b_poblacion = 0.0
+    b_gene = 0.0
+    b_prob_mut = 0.0
+    sol = 50
+    
+    tiempos = []
+    poblacion = []
+    gene = []
+    prob_mut = []
+    
+    
+    for i in range(50):
+        
+        n_poblacion = random.randint(1, 10) * 50
+        generaciones = random.randint(1, 15) * 20
+        prob_mutacion = random.random()
+    
+        alg_gen = genetico_tarea.GeneticoPermutacionesPropio(ProblemaNreinas(64),
+                                                 n_poblacion, prob_mutacion)
+        solucion, tiempo = prueba_genetico(alg_gen, generaciones, False)
+        
+        tiempos.append(tiempo)
+        poblacion.append(n_poblacion)
+        gene.append(generaciones)
+        prob_mut.append(prob_mutacion)
+        
+        if solucion is 0  and tiempo < b_tiempo:
+            b_tiempo = tiempo
+            b_poblacion = n_poblacion
+            b_gene = generaciones
+            b_prob_mut = prob_mutacion
+            sol = solucion
+        
+        if solucion is 0:
+            print("Solucion encontrada:")
+            print("Tiempo: {}".format(b_tiempo))
+            print("poblacion {}".format(b_poblacion))
+            print("Generaciones : {}".format(b_gene))
+            print("Prob_mut: {}".format(b_prob_mut))
+            print("Solucion: {}".format(sol))
+            
+    print("Tiempos: {}".format(tiempos))
+    print("poblacion {}".format(poblacion))
+    print("Generaciones : {}".format(gene))
+    print("Prob_mut: {}".format(prob_mut))
+    
+    print("mejores: ****************************")
+    print("Tiempo: {}".format(b_tiempo))
+    print("poblacion {}".format(b_poblacion))
+    print("Generaciones : {}".format(b_gene))
+    print("Prob_mut: {}".format(b_prob_mut))
+    print("Solucion: {}".format(sol))
+    
+    """
+    n_poblacion = 250
+    generaciones = 180
+    prob_mutacion = 0.11
+   
+    """alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(64),
                                              n_poblacion, prob_mutacion)
-
-    solucion = prueba_genetico(alg_gen, generaciones, True)
+    solucion = prueba_genetico(alg_gen, generaciones, True)"""
+    
+    alg_gen2 = genetico_tarea.GeneticoPermutacionesPropio(ProblemaNreinas(64),
+                                             n_poblacion, prob_mutacion)
+    
+    solucion2 = prueba_genetico(alg_gen2, generaciones, True)
 
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como

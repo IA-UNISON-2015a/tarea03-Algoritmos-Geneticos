@@ -1,0 +1,53 @@
+
+Profesor
+
+8 reinas:
+Tiempo: 0.098
+poblacion 50
+Generaciones : 60
+Prob_mut: 0.05
+
+16 reinas:
+Tiempo: 0.913
+poblacion 100
+Generaciones : 280
+Prob_mut: 0.04
+
+32 reinas:
+Tiempo: 1.456
+poblacion 100
+Generaciones : 180
+Prob_mut: 0.02
+
+64 reinas:
+Tiempo: 64.545
+poblacion 140
+Generaciones : 700
+Prob_mut: 0.01
+
+
+Alumno:
+
+8 reinas:
+Tiempo: 0.019
+poblacion 50
+Generaciones : 20
+Prob_mut: 0.36
+
+16 reinas:
+Tiempo: 0.1663510799407959
+poblacion 50
+Generaciones : 80
+Prob_mut: 0.16
+
+32 reinas:
+Tiempo: 6.632
+poblacion 250
+Generaciones : 120
+Prob_mut: 0.11
+
+64 reinas:
+Tiempo: 22.632
+poblacion 250
+Generaciones : 180
+Prob_mut: 0.15

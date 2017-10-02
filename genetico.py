@@ -268,7 +268,7 @@ class GeneticoPermutaciones(Genetico):
 
     def mutación(self, individuos):
         """
-        Mutación para individus con permutaciones.
+        Mutación para individuos con permutaciones.
         Utiliza la variable local self.prob_muta
 
         @param poblacion: Una lista de individuos (listas).

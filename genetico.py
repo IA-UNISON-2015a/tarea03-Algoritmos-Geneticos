@@ -16,6 +16,7 @@ __author__ = 'Julio Waissman Vilanova'
 
 
 class Problema:
+
     def estado_aleatorio(self):
         """
         Devuelve un estado aleatorio con distribución uniforme
@@ -69,10 +70,10 @@ class Genetico:
 
         """
         self.n_población = n_población
-        individuos = [self.estado_a_cadena(self.problema.estado_aleatorio())
-                      for _ in range(n_población)]
-        self.población = [(self.adaptación(individuo), individuo)
-                          for individuo in individuos]
+        
+        individuos = [ self.estado_a_cadena( self.problema.estado_aleatorio() ) for _ in range(n_población)]
+        
+        self.población = [ ( self.adaptación( individuo ), individuo ) for individuo in individuos]
 
     @staticmethod
     def estado_a_cadena(estado):
@@ -120,13 +121,19 @@ class Genetico:
         @return: Un estado del problema
 
         """
-        for _ in range(n_generaciones):
+        for _ in range( n_generaciones ):
             indices_parejas = self.selección()
+
             hijos = self.cruza(indices_parejas)
+            
             self.mutación(hijos)
+            
             self.reemplazo_generacional(hijos)
-        mas_apto = max(self.población)
-        return self.cadena_a_estado(mas_apto[1])
+        
+
+        mas_apto = max( self.población )
+                
+        return self.cadena_a_estado( mas_apto[1] )
 
     def selección(self):
         """
@@ -147,9 +154,7 @@ class Genetico:
         @return Una lista de individuos (listas de cromosomas a su vez)
 
         """
-        return [self.cruza_individual(self.población[i][1],
-                                      self.población[j][1])
-                for (i, j) in ind_parejas]
+        return [ self.cruza_individual( self.población[i][1], self.población[j][1]) for (i, j) in ind_parejas ]
 
     def cruza_individual(self, cadena1, cadena2):
         """
@@ -220,11 +225,13 @@ class GeneticoPermutaciones(Genetico):
         """
         aleatorio = random.random()
         acumulado = 0
-        suma_aptitudes = 1.0 * sum([x[0] for x in población])
-        for (i, (aptitud, _)) in enumerate(población):
+        suma_aptitudes = 1.0 * sum( [ x[0] for x in población ] )
+        
+        for (i, ( aptitud, _ ) ) in enumerate( población ):
             acumulado += aptitud / suma_aptitudes
             if aleatorio <= acumulado:
                 return i
+        
         raise ValueError("No debe pasar esto")
 
     def selección_individual(self):
@@ -243,8 +250,7 @@ class GeneticoPermutaciones(Genetico):
         Selección por ruleta.
 
         """
-        return [self.selección_individual()
-                for _ in range(self.n_población)]
+        return [ self.selección_individual() for _ in range(self.n_población)]
 
     def cruza_individual(self, cadena1, cadena2):
         """
@@ -295,11 +301,12 @@ class ProblemaTonto:
         self.n = n
 
     def estado_aleatorio(self):
-        lista = list(range(self.n))
-        random.shuffle(lista)
-        return tuple(lista)
+        lista = list( range( self.n ) )
+        random.shuffle( lista )
+        return tuple( lista )
 
-    def costo(self, estado):
+    def costo( self, estado ):
+        
         return estado[0] + estado[-1]
 
 
@@ -313,32 +320,37 @@ def prueba(genetico):
     No regresa nada, solo muestra visualmente como funciona el AG
 
     """
-    print("El nombre del algortimo es: {}".format(genetico.nombre))
-    print("Y el conjunto de estados iniciales es: ")
-    for (ind, (aptitud, individuo)) in enumerate(genetico.población):
-        assert isinstance(individuo, list)
-        print('{}: {} con {} de aptitud'.format(ind, individuo, aptitud))
+    print( "El nombre del algortimo es: {}".format( genetico.nombre ) )
+    print( "Y el conjunto de estados iniciales es: " )
+    for ( ind, ( aptitud, individuo ) ) in enumerate( genetico.población ):
+        assert isinstance( individuo, list )
+        print( '{}: {} con {} de aptitud'.format( ind, individuo, aptitud ) )
 
     parejas = genetico.selección()
     print("Un ejemplo de parejitas sería:")
-    for (i, j) in parejas:
-        print("El estado {} se reproduce con el estado {}".format(i, j))
-    print("\nLos mejores se espera se reproduzcan más\n")
+    for ( i, j ) in parejas:
+        print( "El estado {} se reproduce con el estado {}".format( i, j ) )
+    
+    print( "\nLos mejores se espera se reproduzcan más\n" )
 
-    cadena1 = genetico.población[parejas[0][0]][1]
-    cadena2 = genetico.población[parejas[0][1]][1]
-    hijo = genetico.cruza_individual(cadena1, cadena2)
+    cadena1 = genetico.población[ parejas[0][0] ][1]
+    cadena2 = genetico.población[ parejas[0][1] ][1]
+    hijo = genetico.cruza_individual( cadena1, cadena2 )
+    
     print("Y para observar la cruza tenemos:")
-    print("progenitor 1: {}".format(cadena1))
-    print("progenitor 2: {}".format(cadena2))
-    print("descendiente: {}".format(hijo))
+    print("progenitor 1: {}".format( cadena1 ) )
+    print("progenitor 2: {}".format( cadena2 ) )
+    print("descendiente: {}".format( hijo ) )
 
     hijos = genetico.cruza(parejas)
+    
     print("Haciendo una cruza de todas las parejas tenemos que:")
     for (i, cadena) in enumerate(hijos):
         assert isinstance(cadena, list)
         print("{}: {}".format(i, cadena))
-    genetico.mutación(hijos)
+    
+    genetico.mutación( hijos )
+    
     print("Y después de la mutación tenemos:")
     for (i, cadena) in enumerate(hijos):
         assert isinstance(cadena, list)
@@ -346,9 +358,10 @@ def prueba(genetico):
 
     num_gen = 20
     mejor = genetico.busqueda(num_gen)
+    
     print("\n\nSi iteramos por {} generaciones tenemos que".format(num_gen))
     print("el estado que encontramos con menor costo es:\n")
-    print("{}".format(mejor))
+    print("{}".format(mejor) )
     print("\nQue debería tener el 0 y el 1 a los extremos")
 
 
@@ -356,5 +369,5 @@ if __name__ == "__main__":
 
     # Un objeto genético con permutaciones con una población de
     # 10 individuos y una probabilidad de mutacion de 0.1
-    genetico = GeneticoPermutaciones(ProblemaTonto(10), 10, 0.1)
-    prueba(genetico)
+    genetico = GeneticoPermutaciones( ProblemaTonto(10), 10, 0.1 )
+    prueba( genetico )

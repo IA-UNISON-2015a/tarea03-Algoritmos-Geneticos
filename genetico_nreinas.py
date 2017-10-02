@@ -84,10 +84,22 @@ if __name__ == "__main__":
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
     #
+    # Para este problema en general no se ven cambios demasiado notorios al
+    # cambiar los parametros, porque el tamaño del espacio de estados es pequeño.
+    # El tamaño de la poblacion y las generaciones solo hacen que el algoritmo
+    # tome mas tiempo.
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
     #
+    # En general, si escoges una tamaño de poblacion pequeña, no vas a tener
+    # una buena cobertura del espacio de estado. Por otro lado, si es muy grande,
+    # tu tiempo por generación va a ser muy grande, asi que limitas tu
+    # capacidad para evolucionar.
+    #
+    # Por otro lado, si tu probabilidad de mutacion es muy grande, puede que
+    # te saltes una solucion a la que te estabas acercando, mientras que si
+    # es muy pequeño tu poblacion se atora en un minimo local.
 
     n_poblacion = 64
     generaciones = 100
@@ -109,7 +121,13 @@ if __name__ == "__main__":
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
     #
+    # torneos_k: 2
+    # prob_muta: 0.1
+    # tamaño poblacion: 100
+    # n_reemplazos: 75
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
     #
+    # Nomas lo probé para estos dos problemas, y tuve resultados muy distintos,
+    # asi que la experimentacion es rey.

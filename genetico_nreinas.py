@@ -83,20 +83,22 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
-    #
+    #       Le cambie la probablida de mutacion para que este fuera 0.01 
+    #       Las generaciones en 100 me funcionan bien 
+    #       y el numero de poblacion lo cambie a 100 y la diferencia es minima
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
-    #
+    #       Dependiendo el problema y la maginitud de este cambiamos los valores
 
     n_poblacion = 64
     generaciones = 100
-    prob_mutacion = 0.05
+    prob_mutacion = 0.001
 
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
-                                             n_poblacion, prob_mutacion)
-
-    solucion = prueba_genetico(alg_gen, generaciones, True)
+    #alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
+    #                                         n_poblacion, prob_mutacion)
+    alg_gen = genetico_tarea.GeneticoPermutacionesPropio(ProblemaNreinas(8), n_poblacion)
+    solucion = prueba_genetico(alg_gen, generaciones, True) 
 
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como
@@ -108,8 +110,14 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
-    #
+    """   Todos me dan 0 de costo
+          probabilidad de mutacion en 0.01
+    """
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
+    #      Modificar minimo los anteriores, ya que el problema sigue siendo
+    #      el mismo, nomas que con diferente metodo para resolverlo
     #
+
+    #los tiempos se redujeron significablemente

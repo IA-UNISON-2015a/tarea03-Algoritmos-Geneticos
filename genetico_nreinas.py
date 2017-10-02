@@ -83,21 +83,30 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
-    #
+    #       
+    #       para 8 reinas poblacion de 32 y generacion de 50  con prob_ de muta de .05 
+    #       para 16 reinas poblacion de 64  generacion de 140 y prob_muta de .04 a .05
+    #       para 32 reinas con una poblacion de 100 y con generaciones mayores a 350 
+    #       y con prob_muta menores a .05
+    #       para 64 reinas con poblacion de 120 y 700 generacions con prob_muta de .01
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
+    #       en casi todos los casos los mejores parametros fueron las generaciones
+    #       y para n grandes la prob_muta menor a .05
+    #       
+    #       
     #
-
-    n_poblacion = 64
-    generaciones = 100
-    prob_mutacion = 0.05
-
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
-                                             n_poblacion, prob_mutacion)
-
+   
+    n_poblacion = 120
+    generaciones = 700
+    prob_mutacion = 0.01
+    """
+    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(64),
+                                                 n_poblacion, prob_mutacion)
+    
     solucion = prueba_genetico(alg_gen, generaciones, True)
-
+    """
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como
     # genetico_tarea.GeneticoPermutacionesPropio). De ser muchos
@@ -108,8 +117,22 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
-    #
+    #       para mis resultados no encontre muchas diferencias a los anteriores
+    #       solo que si tuve que elevar la probabilidad de mutacion ya que 
+    #       mi mutacion solo hace un cambio por individuo y doblar las generaciones
+    #       obteniendo casi los mismos tiempos
     #
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
-    #
+    #       los parametros esta entre la probabilidad de mutacion alta y las generaciones
+    #       
+    #       no estoy orgulloso porque no funciona como esperaba 
+    
+    n_poblacion = 150
+    generaciones = 1000
+    prob_mutacion = 0.5
+    
+    alg_gen = genetico_tarea.GeneticoPermutacionesPropio(ProblemaNreinas(32),
+                                             n_poblacion, prob_mutacion)
+
+    solucion = prueba_genetico(alg_gen, generaciones, True)

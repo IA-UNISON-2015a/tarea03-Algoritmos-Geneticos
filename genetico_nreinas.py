@@ -95,8 +95,13 @@ if __name__ == "__main__":
 
     alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
                                              n_poblacion, prob_mutacion)
+    
+    alg_gen2 = genetico_tarea.GeneticoPermutacionesPropio(ProblemaNreinas(16),
+                                             n_poblacion, prob_mutacion)
 
     solucion = prueba_genetico(alg_gen, generaciones, True)
+    
+    solucion2 = prueba_genetico(alg_gen2, generaciones, True)
 
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como

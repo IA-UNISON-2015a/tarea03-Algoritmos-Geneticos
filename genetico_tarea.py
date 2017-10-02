@@ -172,14 +172,17 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
         """
-        tampoco encontre mucho que cambiarle asi que nomas hice que hiciera
-        un ciclo triple de los cromosomas en vez de nomas intercambiar 2
+        si tengo que mutar, agarro los primeros k elementos de un individuo
+        y los pongo al final
         """
         for individuo in individuos:
-            for i in range(len(individuo)):
-                if random.random() < self.prob_muta:
-                    k = random.randint(0, len(individuo) - 1)
-                    individuo[i], individuo[k] = individuo[k], individuo[i]
+            if random.random() < self.prob_muta:
+                k = random.randint(0, len(individuo) - 1)
+                # tengo que hacer esto porque no puedo mutar...
+                for i in range(k):
+                    x = individuo.pop(0)
+                    individuo.append(x)
+
 
     def reemplazo_generacional(self, individuos):
         """

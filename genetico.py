@@ -326,7 +326,9 @@ def prueba(genetico):
     print("\nLos mejores se espera se reproduzcan más\n")
 
     cadena1 = genetico.población[parejas[0][0]][1]
+    
     cadena2 = genetico.población[parejas[0][1]][1]
+    
     hijo = genetico.cruza_individual(cadena1, cadena2)
     print("Y para observar la cruza tenemos:")
     print("progenitor 1: {}".format(cadena1))

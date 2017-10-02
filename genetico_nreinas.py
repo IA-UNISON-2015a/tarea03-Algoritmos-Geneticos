@@ -22,6 +22,18 @@ class ProblemaNreinas(genetico.Problema):
     def __init__(self, n=8):
         self.n = n
 
+    def arrays(self, s):
+        d1 = [0 for i in range(2*self.n - 1)]
+        d2 = [0 for i in range(2*self.n - 1)]
+
+        for i in range(len(s)):
+            aux = i + s[i]
+            d1[aux]+=1
+            aux = self.n - 1 + i - s[i]
+            d2[aux] += 1
+
+        return (d1,d2)
+
     def estado_aleatorio(self):
         estado = list(range(self.n))
         shuffle(estado)
@@ -36,8 +48,15 @@ class ProblemaNreinas(genetico.Problema):
         @return: Un valor numérico, mientras más pequeño, mejor es el estado.
 
         """
-        return sum([1 for (i, j) in combinations(range(self.n), 2)
-                    if abs(estado[i] - estado[j]) == abs(i - j)])
+        d1,d2 = self.arrays(estado)
+        ataques = 0
+        for i in range(2*self.n - 1):
+            if d1[i] > 1:
+                ataques += 2*d1[i] - 2
+            if d2[i] > 1:
+                ataques += 2*d2[i] - 2
+
+        return ataques
 
 
 def prueba_genetico(algo_genetico, n_generaciones, verbose=False):
@@ -83,20 +102,45 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
+    #       Para 8 reinas:
+    #       n_poblacion = 50
+    #       generaciones = 100
+    #       prob_mutacion = 0.05
     #
+    #       Para 16 reinas:
+    #       n_poblacion = 100
+    #       generaciones = 120
+    #       prob_mutacion = 0.01
+    #
+    #       Para 32 reinas:
+    #       n_poblacion = 200
+    #       generaciones = 220
+    #       prob_mutacion = 0.01
+    #
+    #       Para 64 reinas:
+    #       n_poblacion = 500
+    #       generaciones = 700
+    #       prob_mutacion = 0.01
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
-    #
+    #       Cuando se aumenta la n, es mejor disminuir la probabilidad de mutación
+    #       Con la n aumentan el tamaño de la población y las generaciones
 
-    n_poblacion = 64
-    generaciones = 100
-    prob_mutacion = 0.05
+    n_poblacion = 500
+    generaciones = 700
+    prob_mutacion = 0.01
 
-    alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(16),
-                                             n_poblacion, prob_mutacion)
+    i=0
+    for _ in range(10):
+        alg_gen = genetico.GeneticoPermutaciones(ProblemaNreinas(64),
+                                                 n_poblacion, prob_mutacion)
 
-    solucion = prueba_genetico(alg_gen, generaciones, True)
+        solucion = prueba_genetico(alg_gen, generaciones, True)
+        if alg_gen.problema.costo(solucion) == 0:
+            i+=1
+    #print()
+    #print("porcentaje de exito: ",i/10)
 
     # Modifica los parámetro del algoritmo genetico que propusite tu
     # mismo (el cual se conoce como
@@ -108,8 +152,26 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
+    #       Para 8 reinas
+    #       n_poblacion = 50
+    #       generaciones = 100
+    #       prob_mutacion = 0.05
     #
+    #       Para 16 reinas
+    #       n_poblacion = 120
+    #       generaciones = 150
+    #       prob_mutacion = 0.08
     #
+    #       Para 32 reinas
+    #       n_poblacion = 320
+    #       generaciones = 450
+    #       prob_mutacion = 0.02
+    #
+    #       Para 64 reinas
+    #       n_poblacion = 520
+    #       generaciones = 750
+    #       prob_mutacion = 0.01
     #   -- ¿Que reglas podrías establecer para asignar valores
     #       segun tu experiencia?
-    #
+    #       La probabilidad de mutacion es menor cuando la n crece.
+    #       El tamaño de la población aumenta con la n junto con las iteraciones.

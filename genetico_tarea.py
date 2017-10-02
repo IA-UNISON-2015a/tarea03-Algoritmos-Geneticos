@@ -11,7 +11,7 @@ genético para resolver problemas de permutaciones
 
 import random
 import genetico
-
+import itertools
 __author__ = 'Bárbara Galindo'
 
 
@@ -102,19 +102,6 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # miPoblacion = self.población[:]
         auxPoblacionIndices = []
-        ''' while len(miPoblacion) != 1:
-            aux1 = self.individuo_aleatorio(miPoblacion)
-            aux2 = self.individuo_aleatorio(miPoblacion)
-            if aux1 == aux2:
-                aux2 = self.individuo_aleatorio(miPoblacion)
-            if aux1[0] > aux2[0]:
-                auxPoblacion.append(aux1)
-                miPoblacion.remove(aux1)
-            else:
-                auxPoblacion.append(aux2)
-                miPoblacion.remove(aux2)
-        auxPoblacion.append(miPoblacion) '''
-        # [[],[]],[[],[]]
         xd = []
         for x in range(len(self.población)):
             indice1 = random.randint(0, len(self.población) - 1)
@@ -141,6 +128,7 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
         #
+        
         hijo = []
         for x in range(len(cadena1)):
             if cadena1[x] not in hijo and cadena2[x] not in hijo:
@@ -176,16 +164,9 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #
         # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
         #
-        aux1, aux2 = [], []
         for individuo in individuos:
             if random.random() < self.prob_muta:
-                for x in range(int(len(individuo) / 2)):
-                    aux1.append(individuo[x])
-                for x in range(int(len(individuo) / 2), len(individuo)):
-                    aux2.append(individuo[x])
-                individuo[:int(len(individuo) / 2)-1] = aux2[:]
-                individuo[int(len(individuo) / 2):] = aux1[:]
-
+                [individuo[i ^ 1] for i in range(len(individuo))]
         #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def reemplazo_generacional(self, individuos):

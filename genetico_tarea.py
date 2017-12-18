@@ -8,33 +8,48 @@ En este módulo vas a desarrollar tu propio algoritmo
 genético para resolver problemas de permutaciones
 
 """
-
-import random
+import numpy as np 
 import genetico
 
-__author__ = 'Tu nombre'
+__author__ = 'Temoc'
 
 
 class GeneticoPermutacionesPropio(genetico.Genetico):
     """
     Clase con un algoritmo genético adaptado a problemas de permutaciones
+    para esto tratare de entrar en contexto 
+    
+    Resumen 
+    
+    Los Algoritmos Evolutivos están inspirados en la naturaleza  y se basan en 
+    un conjunto de modelos basados en la evolución de los seres vivos. 
+    Se caracterizan por imitar procesos adaptativos de los sistemas naturales y 
+    se basan en supervivencia del mejor individuo, siendo un individuo una 
+    representación de una solución potencial del problema que se implementa como 
+    una estructura de datos. La población de individuos se somete a un proceso 
+    de selección,que favorece a los mejores según su aptitud, y después a ciertas 
+    transformaciones. Cada ciclo de transformación y selección 
+    constituye una generación. Se espera que después de cierto número de 
+    generaciones el mejor individuo de la población esté cerca de la solución 
+    buscada.  
 
     """
-    def __init__(self, problema, n_población):
+    def __init__(self, problema, n_población,prob_mut=0.01): #(prob_mut)
         """
         Aqui puedes poner algunos de los parámetros
         que quieras utilizar en tu clase
 
         Para esta tarea vamos a cambiar la forma de representación
         para que se puedan utilizar operadores clásicos (esto implica
-        reescribir los métodos estáticos cadea_a_estado y
+        reescribir los métodos estáticos cadena_a_estado y
         estado_a_cadena).
 
         """
-        self.nombre = 'propuesto por el alumno'
-        super().__init__(problema, n_población)
+        self.nombre = 'propuesto por el alumno Moyron Jose'
+        super().__init__(problema,n_población)
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO -----------------------------------
+        self.prob_mut = prob_mut
+        #self.prob_mut = prob_mut  el bueno! antes de la modifcacion
         #
 
     @staticmethod
@@ -48,9 +63,9 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
+        return list(estado)  #regresamos una lista con los estados generados.
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     @staticmethod
     def cadena_a_estado(cadena):
@@ -63,9 +78,9 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
+        return tuple(cadena) #regresamos una tupla 
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
         
     def adaptación(self, individuo):
@@ -78,9 +93,9 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
+        return 1/(1.0+self.problema.costo(self.cadena_a_estado(individuo)))
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def selección(self):
         """
@@ -91,9 +106,17 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
+        parejas = []
+        for _ in range(len(self.población)):
+            
+            c = np.random.randint(0,len(self.población),4)
+            i = c[0] if self.población[c[0]][0] > self.población[c[1]][0] else c[1]
+            j = c[2] if self.población[c[2]][0] > self.población[c[3]][0] else c[3]
+            parejas.append((i,j))
+            
+        return parejas
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def cruza_individual(self, cadena1, cadena2):
         """
@@ -103,9 +126,20 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO ----------------------------------
+        hijo = cadena1[:]
+        len_cadena = len(hijo)
+        corte1 = np.random.randint(0, len_cadena - 1)
+        corte2 = np.random.randint(corte1 + 1, len_cadena)
+        seg = hijo[corte1:corte2]
+        aux = [i for i in cadena2 if i not in seg ]
+        j=0
+        for i in range(len_cadena):
+            if hijo[i] not in seg:
+                hijo[i] = aux[j]
+                j += 1
+        return hijo
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def mutación(self, individuos):
         """
@@ -120,9 +154,13 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
         #                          10 PUNTOS
         ###################################################################
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
+        for individuo in individuos:
+            if np.random.random() < self.prob_mut:
+                k = np.random.randint(0, len(individuo),2)
+                x = individuo.pop(k[0])
+                individuo.insert(k[1],x)
         #
-        raise NotImplementedError("¡Este metodo debe ser implementado!")
+        #raise NotImplementedError("¡Este metodo debe ser implementado!")
 
     def reemplazo_generacional(self, individuos):
         """
@@ -137,7 +175,11 @@ class GeneticoPermutacionesPropio(genetico.Genetico):
 
         """
         #
-        # ------ IMPLEMENTA AQUI TU CÓDIGO --------------------------------
+        reemplazo = [(self.adaptación(individuo), individuo)
+                        for individuo in individuos]
+        reemplazo.append(max(self.población))
+        reemplazo.sort(reverse=True)
+        self.población = reemplazo[:self.n_población]
         #
 
 

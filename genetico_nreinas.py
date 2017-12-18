@@ -83,11 +83,23 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?  (escribelos
     #       abajo de esta linea)
+    #  8 reinas
+    #  poblacion de 32
+    #  generacion de 100
+    #  con probabilidad de mutacion  prob_ de muta de .05
+    #  para 16 reinas poblacion de 64  generacion de 140 y prob_muta de .04 a .05
     #
+    #  32 reinas
+    #  poblacion de 100
+    #  con generaciones mayores a 350
+    #
+    #  y con prob_muta menores a .05
+    #  para 64 reinas con poblacion de 120 y 700 generacions con prob_muta de .01
     #
     #   -- ¿Que reglas podrías establecer para asignar valores segun
     #       tu experiencia?
-    #
+    #       en casi todos los casos los mejores parametros fueron las generaciones
+    #       y para n grandes la prob_muta menor a .05
 
     n_poblacion = 64
     generaciones = 100
@@ -108,8 +120,7 @@ if __name__ == "__main__":
     #
     #   -- ¿Cuales son en cada caso los mejores valores?
     #       (escribelos abajo de esta linea)
+    #       no se aprecia gran diferencia respecto a los anteriores
+    #       solo que me puse a jugar con la probabilidad de mutacion
     #
-    #
-    #   -- ¿Que reglas podrías establecer para asignar valores
-    #       segun tu experiencia?
-    #
+  
